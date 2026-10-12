@@ -97,5 +97,7 @@ src/main/resources/
 
 ## Defence materials
 
-- [`docs/Defense_Presentation.pptx`](docs/Defense_Presentation.pptx) — the presentation.
+- [`docs/Defense_Presentation.pptx`](docs/Defense_Presentation.pptx) — the presentation (English, speaker notes included).
+- [`docs/Defense_Presentation_RU.pptx`](docs/Defense_Presentation_RU.pptx) — the same presentation in Russian.
+- `docs/build_presentation.py` / `docs/build_presentation_ru.py` regenerate the decks (`pip install python-pptx`).
 - [`docs/DEFENSE.md`](docs/DEFENSE.md) — what was done in each lab, the demo script and answers to the defence questions.
