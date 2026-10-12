@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{error.notfound.title}">Book not found</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: navbar('books', '/books')}"></div>
+
+<main class="page not-found">
+    <div class="code">404</div>
+    <h1 th:text="#{error.notfound.title}">Book not found</h1>
+    <p th:text="#{error.notfound.text(${bookId})}">There is no book with id 999 in the catalogue.</p>
+    <p class="muted"><code th:text="${message}">Book with id 999 does not exist</code></p>
+    <p><a class="button" th:href="@{/books}" th:text="#{error.back}">Back to the catalogue</a></p>
+</main>
+</body>
+</html>

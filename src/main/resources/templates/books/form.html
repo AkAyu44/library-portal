@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{book.new}">New book</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: navbar('new', '/books/new')}"></div>
+
+<main class="page">
+<h1 th:text="#{book.new}">New book</h1>
+
+<form class="book-form" th:action="@{/books}" th:object="${form}" method="post" novalidate>
+
+    <div class="alert" th:if="${#fields.hasAnyErrors()}">
+        <strong th:text="#{form.errors.summary}">Please correct the errors:</strong>
+        <ul>
+            <li th:each="e : ${#fields.allErrors()}" th:text="${e}"></li>
+        </ul>
+    </div>
+
+    <label for="title" th:text="#{book.title}">Title</label>
+    <input type="text" th:field="*{title}" th:errorclass="is-invalid">
+    <span class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+
+    <label for="author" th:text="#{book.author}">Author</label>
+    <input type="text" th:field="*{author}" th:errorclass="is-invalid">
+    <span class="error" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></span>
+
+    <label for="year" th:text="#{book.year}">Year</label>
+    <input type="number" th:field="*{year}" th:errorclass="is-invalid">
+    <span class="error" th:if="${#fields.hasErrors('year')}" th:errors="*{year}"></span>
+
+    <label for="genre" th:text="#{book.genre}">Genre</label>
+    <select th:field="*{genre}" th:errorclass="is-invalid">
+        <option value="">—</option>
+        <option th:each="g : ${genres}" th:value="${g}" th:text="#{'genre.' + ${g}}"></option>
+    </select>
+    <span class="error" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></span>
+
+    <!-- variant 7: publication date, the format depends on the locale -->
+    <label for="publishedOn" th:text="#{book.published}">Publication date</label>
+    <input type="text" th:field="*{publishedOn}" th:errorclass="is-invalid"
+           th:placeholder="#{book.published.placeholder}">
+    <small class="hint" th:text="#{book.published.hint}">format hint</small>
+    <span class="error" th:if="${#fields.hasErrors('publishedOn')}" th:errors="*{publishedOn}"></span>
+
+    <label class="check"><input type="checkbox" th:field="*{available}">
+        <span th:text="#{book.available}">Available</span></label>
+
+    <button type="submit" th:text="#{form.submit}">Save</button>
+</form>
+</main>
+</body>
+</html>

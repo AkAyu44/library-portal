@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- navbar(active, self): self is the address of the current page, used by the language links -->
+<header th:fragment="navbar(active, self)" class="navbar">
+    <a class="brand" th:href="@{/}" th:text="#{app.title}">Library Portal</a>
+    <a th:href="@{/books}" th:classappend="${active == 'books'} ? 'current'"
+       th:text="#{nav.catalogue}">Catalogue</a>
+    <a th:href="@{/books/new}" th:classappend="${active == 'new'} ? 'current'"
+       th:text="#{nav.new}">New book</a>
+    <span class="lang">
+        <a th:href="@{${self}(lang=en)}"
+           th:classappend="${#locale.language == 'en'} ? 'current'">EN</a>
+        <a th:href="@{${self}(lang=ru)}"
+           th:classappend="${#locale.language == 'ru'} ? 'current'">RU</a>
+    </span>
+</header>
+
+</body>
+</html>

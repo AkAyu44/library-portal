@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{book.list}">Catalogue</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: navbar('books', '/books')}"></div>
+
+<main class="page">
+    <h1 th:text="#{book.list}">Catalogue</h1>
+
+    <!-- Lab 5/6: flash attributes survive exactly one redirect -->
+    <p th:if="${addedTitle}" class="flash" th:text="#{book.added(${addedTitle})}">Book added</p>
+    <p th:if="${deletedTitle}" class="flash" th:text="#{book.deleted(${deletedTitle})}">Book deleted</p>
+
+    <form class="filter" th:action="@{/books}" method="get">
+        <input type="text" name="author" th:value="${author}" th:placeholder="#{books.filter.author}">
+        <button type="submit" th:text="#{books.filter.apply}">Apply</button>
+        <a th:href="@{/books}" th:text="#{books.filter.reset}">Reset</a>
+    </form>
+
+    <p class="muted" th:text="#{books.count(${#lists.size(books)})}">Books found: 3</p>
+
+    <table>
+        <tr>
+            <th th:text="#{book.id}">#</th>
+            <th th:text="#{book.title}">Title</th>
+            <th th:text="#{book.author}">Author</th>
+            <th th:text="#{book.year}">Year</th>
+            <th th:text="#{book.genre}">Genre</th>
+            <th th:text="#{book.published}">Publication date</th>
+            <th th:text="#{book.available}">Available</th>
+        </tr>
+        <tr th:each="b : ${books}">
+            <td th:text="${b.id}">1</td>
+            <td><a th:href="@{/books/{id}(id=${b.id})}" th:text="${b.title}">Title</a></td>
+            <td th:text="${b.author}">Author</td>
+            <td th:text="${b.year}">2020</td>
+            <td th:text="${b.genre} ? #{'genre.' + ${b.genre}} : '—'">Novel</td>
+            <td th:text="${b.publishedOn} ? ${#temporals.format(b.publishedOn, 'd MMMM yyyy')} : '—'">1 May 2020</td>
+            <td th:text="${b.available} ? #{yes} : #{no}">yes</td>
+        </tr>
+    </table>
+</main>
+</body>
+</html>

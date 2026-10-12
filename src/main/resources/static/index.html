@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library Portal</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<header class="navbar">
+    <a class="brand" href="/">Library Portal</a>
+    <a href="/books">Catalogue</a>
+    <a href="/books/new">New book</a>
+</header>
+
+<main class="page">
+    <h1>Library Portal</h1>
+    <p class="muted">Final educational project — RWPSF 3305, IITU. One application, all topics of laboratory works 1–6.
+        This page is a static resource (Lab 5): it is served from <code>static/index.html</code> without a controller.</p>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Lab 1 · Spring Boot &amp; REST</h3>
+            <ul>
+                <li><a href="/api/hello?name=IITU">/api/hello?name=IITU</a></li>
+                <li><a href="/api/info">/api/info</a></li>
+                <li><a href="/api/wordcount?text=Spring%20Boot%20is%20very%20interesting">/api/wordcount</a> (variant 7)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Lab 2 · IoC container</h3>
+            <ul>
+                <li><a href="/api/system/notify?text=IITU">/api/system/notify</a></li>
+                <li><a href="/api/system/notify/html?text=Hello%20%3Cworld%3E">/api/system/notify/html</a> (variant 8)</li>
+                <li><a href="/api/system/lifecycle">/api/system/lifecycle</a></li>
+                <li><a href="/api/system/scopes">/api/system/scopes</a></li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Lab 3 · Configuration</h3>
+            <ul>
+                <li><a href="/api/config">/api/config</a></li>
+                <li><a href="/api/system/cache">/api/system/cache</a> (variant 7)</li>
+                <li><a href="/actuator/env/app.mail.retry-count">/actuator/env/app.mail.retry-count</a></li>
+                <li><a href="/actuator/health">/actuator/health</a></li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Lab 4 · Spring AOP</h3>
+            <ul>
+                <li><a href="/api/system/proxy">/api/system/proxy</a></li>
+                <li><a href="/api/books/stats">/api/books/stats</a> (SLOW warning)</li>
+                <li><a href="/api/system/audit">/api/system/audit</a></li>
+                <li>DELETE /api/books/bulk?ids=1,2&amp;viaProxy=false|true</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Lab 5 · Spring MVC</h3>
+            <ul>
+                <li><a href="/api/books">/api/books</a>, <a href="/api/books?author=Bloch&amp;limit=1">?author=Bloch</a></li>
+                <li><a href="/api/books/1/citation">/api/books/1/citation</a> (variant 6)</li>
+                <li><a href="/books">/books</a> — Thymeleaf page</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Lab 6 · Forms &amp; validation</h3>
+            <ul>
+                <li><a href="/books/new">/books/new</a>, <a href="/books/new?lang=ru">?lang=ru</a></li>
+                <li><a href="/books/999">/books/999</a> — HTML 404</li>
+                <li><a href="/api/books/999">/api/books/999</a> — ProblemDetail</li>
+            </ul>
+        </div>
+    </div>
+</main>
+</body>
+</html>

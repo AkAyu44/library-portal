@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${book.title}">Book</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: navbar('books', '/books/' + ${book.id})}"></div>
+
+<main class="page">
+    <p class="muted" th:text="#{book.details}">Book details</p>
+    <h1 th:text="${book.title}">Title</h1>
+
+    <dl class="details">
+        <dt th:text="#{book.author}">Author</dt>
+        <dd th:text="${book.author}">Author</dd>
+        <dt th:text="#{book.year}">Year</dt>
+        <dd th:text="${book.year}">2020</dd>
+        <dt th:text="#{book.genre}">Genre</dt>
+        <dd th:text="${book.genre} ? #{'genre.' + ${book.genre}} : '—'">Novel</dd>
+        <dt th:text="#{book.published}">Publication date</dt>
+        <dd th:text="${book.publishedOn} ? ${#temporals.format(book.publishedOn, 'd MMMM yyyy')} : '—'">1 May 2020</dd>
+        <dt th:text="#{book.available}">Available</dt>
+        <dd th:text="${book.available} ? #{yes} : #{no}">yes</dd>
+        <dt th:text="#{book.citation}">Citation</dt>
+        <dd><code th:text="${citation}">Author (2020). Title.</code></dd>
+    </dl>
+
+    <form th:action="@{/books/{id}/delete(id=${book.id})}" method="post">
+        <button type="submit" class="danger" th:text="#{book.delete}">Delete</button>
+        <a th:href="@{/books}" th:text="#{error.back}">Back to the catalogue</a>
+    </form>
+</main>
+</body>
+</html>

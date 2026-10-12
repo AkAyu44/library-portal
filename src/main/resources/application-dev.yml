@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+server:
+  port: 8081
+
+app:
+  mail:
+    retry-count: 1
+    enabled: false
+  cache:
+    ttl: 30s
+    max-entries: 50
+
+logging:
+  level:
+    kz.iitu.library: DEBUG

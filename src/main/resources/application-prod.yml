@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+server:
+  port: 8080
+
+app:
+  mail:
+    retry-count: 5
+    enabled: true
+
+logging:
+  level:
+    kz.iitu.library: WARN

@@ -1,0 +1,38 @@
+# Lab 3: shared configuration (application.properties was replaced by YAML)
+spring:
+  application:
+    name: library-portal
+  thymeleaf:
+    cache: false
+  messages:
+    # Lab 6: without this a locale with no own bundle (en) falls back to the OS locale
+    fallback-to-system-locale: false
+
+server:
+  port: 8080
+
+app:
+  owner: "Bektursyn Kuat"
+  group: "IT1-2409IS"
+  date-pattern: "yyyy-MM-dd HH:mm:ss"
+  mail:
+    from: no-reply@iitu.kz
+    retry-count: 3
+    timeout: 5s
+    enabled: true
+  cache:                # Lab 3, variant 7 — used by CitationCache (Lab 5 citations)
+    ttl: 1m
+    max-entries: 100
+
+logging:
+  level:
+    kz.iitu.library: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,env,configprops,conditions,beans
+  endpoint:
+    env:
+      show-values: always
