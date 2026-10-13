@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="#{book.list}">Catalogue</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
@@ -23,6 +24,7 @@
 
     <p class="muted" th:text="#{books.count(${#lists.size(books)})}">Books found: 3</p>
 
+    <div class="table-wrap">
     <table>
         <tr>
             <th th:text="#{book.id}">#</th>
@@ -43,6 +45,7 @@
             <td th:text="${b.available} ? #{yes} : #{no}">yes</td>
         </tr>
     </table>
+    </div>
 </main>
 </body>
 </html>

@@ -164,6 +164,30 @@ class LibraryPortalApplicationTests {
         mvc.perform(get("/css/app.css")).andExpect(status().isOk());
     }
 
+    @Test
+    void lab5_startPageKeepsEveryDemoLink() throws Exception {
+        String html = mvc.perform(get("/index.html"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        // relative links: no hardcoded host, port or context path
+        assertThat(html).contains(
+                "href=\"css/app.css\"", "href=\"books\"", "href=\"books/new\"",
+                "href=\"api/hello?name=IITU\"", "href=\"api/info\"",
+                "href=\"api/wordcount?text=Spring%20Boot%20is%20very%20interesting\"",
+                "href=\"api/system/notify?text=IITU\"",
+                "href=\"api/system/notify/html?text=Hello%20%3Cworld%3E\"",
+                "href=\"api/system/lifecycle\"", "href=\"api/system/scopes\"",
+                "href=\"api/config\"", "href=\"api/system/cache\"",
+                "href=\"actuator/env/app.mail.retry-count\"", "href=\"actuator/health\"",
+                "href=\"api/system/proxy\"", "href=\"api/books/stats\"", "href=\"api/system/audit\"",
+                "/api/books/bulk?ids=1,2&amp;viaProxy=false|true",
+                "href=\"api/books\"", "href=\"api/books?author=Bloch&amp;limit=1\"",
+                "href=\"api/books/1/citation\"",
+                "href=\"books/new?lang=ru\"", "href=\"books/999\"", "href=\"api/books/999\"",
+                "SLOW warning", "variant 6", "variant 7", "variant 8");
+        assertThat(html).doesNotContain("localhost");
+    }
+
     // ---------------- Lab 6 ----------------
     @Test
     void lab6_invalidFormIsRedisplayedWithErrors() throws Exception {

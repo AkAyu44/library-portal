@@ -2,74 +2,126 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Library Portal — final educational project for RWPSF 3305 at IITU: laboratory works 1–6 in one Spring Boot application.">
     <title>Library Portal</title>
-    <link rel="stylesheet" href="/css/app.css">
+    <!-- relative URLs: no hardcoded host, port or context path -->
+    <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 <header class="navbar">
-    <a class="brand" href="/">Library Portal</a>
-    <a href="/books">Catalogue</a>
-    <a href="/books/new">New book</a>
+    <a class="brand" href="./">Library Portal</a>
+    <a href="books">Catalogue</a>
+    <a href="books/new">New book</a>
 </header>
 
 <main class="page">
-    <h1>Library Portal</h1>
-    <p class="muted">Final educational project — RWPSF 3305, IITU. One application, all topics of laboratory works 1–6.
-        This page is a static resource (Lab 5): it is served from <code>static/index.html</code> without a controller.</p>
+    <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow"><span>RWPSF 3305 · IITU ·</span> <span class="nowrap">Laboratory works 1–6</span></p>
+        <h1 id="page-title">Library Portal</h1>
+        <p class="lead">Final educational project — RWPSF 3305, IITU. One application, all topics of laboratory works 1–6.
+            This page is a static resource (Lab 5): it is served from <code>static/index.html</code> without a controller.</p>
+    </section>
 
-    <div class="cards">
-        <div class="card">
-            <h3>Lab 1 · Spring Boot &amp; REST</h3>
-            <ul>
-                <li><a href="/api/hello?name=IITU">/api/hello?name=IITU</a></li>
-                <li><a href="/api/info">/api/info</a></li>
-                <li><a href="/api/wordcount?text=Spring%20Boot%20is%20very%20interesting">/api/wordcount</a> (variant 7)</li>
+    <section class="cards" aria-label="Laboratory works">
+        <article class="card">
+            <div class="card-head">
+                <span class="card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                </span>
+                <h2 class="card-title"><span class="card-kicker">Lab 1</span>Spring Boot &amp; REST</h2>
+            </div>
+            <ul class="endpoints">
+                <li><a class="endpoint" href="api/hello?name=IITU">/api/hello?name=IITU</a></li>
+                <li><a class="endpoint" href="api/info">/api/info</a></li>
+                <li><a class="endpoint" href="api/wordcount?text=Spring%20Boot%20is%20very%20interesting">/api/wordcount</a>
+                    <span class="tag">variant 7</span></li>
             </ul>
-        </div>
-        <div class="card">
-            <h3>Lab 2 · IoC container</h3>
-            <ul>
-                <li><a href="/api/system/notify?text=IITU">/api/system/notify</a></li>
-                <li><a href="/api/system/notify/html?text=Hello%20%3Cworld%3E">/api/system/notify/html</a> (variant 8)</li>
-                <li><a href="/api/system/lifecycle">/api/system/lifecycle</a></li>
-                <li><a href="/api/system/scopes">/api/system/scopes</a></li>
+        </article>
+
+        <article class="card">
+            <div class="card-head">
+                <span class="card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5"/><path d="M12 13v8"/></svg>
+                </span>
+                <h2 class="card-title"><span class="card-kicker">Lab 2</span>IoC container</h2>
+            </div>
+            <ul class="endpoints">
+                <li><a class="endpoint" href="api/system/notify?text=IITU">/api/system/notify</a></li>
+                <li><a class="endpoint" href="api/system/notify/html?text=Hello%20%3Cworld%3E">/api/system/notify/html</a>
+                    <span class="tag">variant 8</span></li>
+                <li><a class="endpoint" href="api/system/lifecycle">/api/system/lifecycle</a></li>
+                <li><a class="endpoint" href="api/system/scopes">/api/system/scopes</a></li>
             </ul>
-        </div>
-        <div class="card">
-            <h3>Lab 3 · Configuration</h3>
-            <ul>
-                <li><a href="/api/config">/api/config</a></li>
-                <li><a href="/api/system/cache">/api/system/cache</a> (variant 7)</li>
-                <li><a href="/actuator/env/app.mail.retry-count">/actuator/env/app.mail.retry-count</a></li>
-                <li><a href="/actuator/health">/actuator/health</a></li>
+        </article>
+
+        <article class="card">
+            <div class="card-head">
+                <span class="card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                </span>
+                <h2 class="card-title"><span class="card-kicker">Lab 3</span>Configuration</h2>
+            </div>
+            <ul class="endpoints">
+                <li><a class="endpoint" href="api/config">/api/config</a></li>
+                <li><a class="endpoint" href="api/system/cache">/api/system/cache</a>
+                    <span class="tag">variant 7</span></li>
+                <li><a class="endpoint" href="actuator/env/app.mail.retry-count">/actuator/env/app.mail.retry-count</a></li>
+                <li><a class="endpoint" href="actuator/health">/actuator/health</a></li>
             </ul>
-        </div>
-        <div class="card">
-            <h3>Lab 4 · Spring AOP</h3>
-            <ul>
-                <li><a href="/api/system/proxy">/api/system/proxy</a></li>
-                <li><a href="/api/books/stats">/api/books/stats</a> (SLOW warning)</li>
-                <li><a href="/api/system/audit">/api/system/audit</a></li>
-                <li>DELETE /api/books/bulk?ids=1,2&amp;viaProxy=false|true</li>
+        </article>
+
+        <article class="card">
+            <div class="card-head">
+                <span class="card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+                </span>
+                <h2 class="card-title"><span class="card-kicker">Lab 4</span>Spring AOP</h2>
+            </div>
+            <ul class="endpoints">
+                <li><a class="endpoint" href="api/system/proxy">/api/system/proxy</a></li>
+                <li><a class="endpoint" href="api/books/stats">/api/books/stats</a>
+                    <span class="tag tag-warn">SLOW warning</span></li>
+                <li><a class="endpoint" href="api/system/audit">/api/system/audit</a></li>
+                <li><span class="method">DELETE</span>
+                    <code class="endpoint endpoint-static" title="A DELETE request — run it with curl, a link can only send GET">/api/books/bulk?ids=1,2&amp;viaProxy=false|true</code></li>
             </ul>
-        </div>
-        <div class="card">
-            <h3>Lab 5 · Spring MVC</h3>
-            <ul>
-                <li><a href="/api/books">/api/books</a>, <a href="/api/books?author=Bloch&amp;limit=1">?author=Bloch</a></li>
-                <li><a href="/api/books/1/citation">/api/books/1/citation</a> (variant 6)</li>
-                <li><a href="/books">/books</a> — Thymeleaf page</li>
+        </article>
+
+        <article class="card">
+            <div class="card-head">
+                <span class="card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>
+                </span>
+                <h2 class="card-title"><span class="card-kicker">Lab 5</span>Spring MVC</h2>
+            </div>
+            <ul class="endpoints">
+                <li><a class="endpoint" href="api/books">/api/books</a>
+                    <a class="endpoint" href="api/books?author=Bloch&amp;limit=1">?author=Bloch</a></li>
+                <li><a class="endpoint" href="api/books/1/citation">/api/books/1/citation</a>
+                    <span class="tag">variant 6</span></li>
+                <li><a class="endpoint" href="books">/books</a>
+                    <span class="note">Thymeleaf page</span></li>
             </ul>
-        </div>
-        <div class="card">
-            <h3>Lab 6 · Forms &amp; validation</h3>
-            <ul>
-                <li><a href="/books/new">/books/new</a>, <a href="/books/new?lang=ru">?lang=ru</a></li>
-                <li><a href="/books/999">/books/999</a> — HTML 404</li>
-                <li><a href="/api/books/999">/api/books/999</a> — ProblemDetail</li>
+        </article>
+
+        <article class="card">
+            <div class="card-head">
+                <span class="card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+                </span>
+                <h2 class="card-title"><span class="card-kicker">Lab 6</span>Forms &amp; validation</h2>
+            </div>
+            <ul class="endpoints">
+                <li><a class="endpoint" href="books/new">/books/new</a>
+                    <a class="endpoint" href="books/new?lang=ru">?lang=ru</a></li>
+                <li><a class="endpoint" href="books/999">/books/999</a>
+                    <span class="note">HTML 404</span></li>
+                <li><a class="endpoint" href="api/books/999">/api/books/999</a>
+                    <span class="note">ProblemDetail</span></li>
             </ul>
-        </div>
-    </div>
+        </article>
+    </section>
 </main>
 </body>
 </html>
