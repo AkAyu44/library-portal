@@ -161,7 +161,12 @@ class LibraryPortalApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(view().name("books/list"))
                 .andExpect(model().attributeExists("books"));
-        mvc.perform(get("/css/app.css")).andExpect(status().isOk());
+        mvc.perform(get("/css/app.css"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("../img/bookshelf.svg")));
+        mvc.perform(get("/img/bookshelf.svg"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("image/svg+xml"));
     }
 
     @Test

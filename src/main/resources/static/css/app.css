@@ -219,7 +219,36 @@ h1 {
 }
 
 /* ---------- Landing page (static/index.html) ---------- */
-.hero { padding: var(--space-4) 0 var(--space-6); }
+/* hero banner: a bookshelf wall (img/bookshelf.svg) under a navy overlay that is
+   darkest behind the text and lets the books show through on the right */
+.hero {
+    position: relative;
+    margin-bottom: var(--space-6);
+    padding: clamp(32px, 5vw, 60px) clamp(24px, 4.5vw, 56px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    overflow: hidden;
+    color: #ffffff;
+    background:
+        linear-gradient(90deg, rgba(12, 24, 50, 0.96) 0%, rgba(14, 28, 58, 0.88) 40%,
+                        rgba(15, 29, 58, 0.55) 72%, rgba(15, 29, 58, 0.30) 100%),
+        url("../img/bookshelf.svg") center / cover no-repeat,
+        var(--navy-900);
+    box-shadow: var(--shadow-lg);
+}
+.hero .eyebrow {
+    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.10);
+    color: #dbe5ff;
+}
+.hero .eyebrow::before { background: #8fb0ff; }
+.hero h1 { color: #ffffff; }
+.hero .lead { color: rgba(233, 239, 255, 0.88); }
+.hero .lead code {
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
 
 .eyebrow {
     display: inline-flex;
@@ -622,7 +651,15 @@ button.danger:hover { background: var(--danger-strong); }
     .navbar .brand { margin-right: auto; }
     .navbar a { font-size: 0.9rem; padding: 6px 10px; }
     .page { padding-top: var(--space-5); }
-    .hero { padding-bottom: var(--space-5); }
+    .hero {
+        margin-bottom: var(--space-5);
+        border-radius: var(--radius-lg);
+        /* the text spans the full width here, so the overlay is uniform */
+        background:
+            linear-gradient(rgba(12, 24, 50, 0.90), rgba(14, 28, 58, 0.84)),
+            url("../img/bookshelf.svg") center / cover no-repeat,
+            var(--navy-900);
+    }
     .eyebrow { flex-wrap: wrap; gap: 2px var(--space-2); border-radius: var(--radius); letter-spacing: 0.05em; }
     .card { padding: 18px; }
     .book-form { padding: var(--space-4); }
