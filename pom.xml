@@ -47,6 +47,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!-- Lab 7, variant 7: HATEOAS links (EntityModel, HAL) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+        </dependency>
+        <!-- Lab 7: OpenAPI document (/v3/api-docs) and Swagger UI (/swagger-ui.html);
+             the 3.x line is the one for Spring Boot 4 -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>3.1.1</version>
+        </dependency>
         <!-- Lab 1: dev-time auto restart -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,0 +1,71 @@
+### Lab 7 demonstration — open in IntelliJ IDEA and press ▶ next to a request.
+### The application must be running on port 8080.
+
+### 3. The collection: 200, a JSON array of BookResponse
+GET http://localhost:8080/api/books
+
+### 3. One book: 200, HAL with _links (variant 7: self, books, citation)
+GET http://localhost:8080/api/books/1
+
+### 4. Create: 201 Created + Location header + the new book in the body
+POST http://localhost:8080/api/books
+Content-Type: application/json
+
+{
+  "title": "Pro Spring 6",
+  "author": "Iuliana Cosmina",
+  "year": 2023,
+  "genre": "PROGRAMMING",
+  "available": true,
+  "publishedOn": "2023-03-01"
+}
+
+### 5. Follow the Location of the created book (id 5 on a fresh start)
+GET http://localhost:8080/api/books/5
+
+### 9. Create the same book again: 409 Conflict, application/problem+json
+POST http://localhost:8080/api/books
+Content-Type: application/json
+
+{
+  "title": "Pro Spring 6",
+  "author": "Iuliana Cosmina",
+  "year": 2023,
+  "genre": "PROGRAMMING"
+}
+
+### 8. An empty title: 400, problem detail produced by ResponseEntityExceptionHandler
+POST http://localhost:8080/api/books
+Content-Type: application/json
+
+{
+  "title": "",
+  "author": "Iuliana Cosmina",
+  "year": 2023,
+  "genre": "PROGRAMMING"
+}
+
+### Replace: 200 (PUT writes every field; createdAt is kept by the server)
+PUT http://localhost:8080/api/books/5
+Content-Type: application/json
+
+{
+  "title": "Pro Spring 6, 2nd printing",
+  "author": "Iuliana Cosmina",
+  "year": 2023,
+  "genre": "PROGRAMMING",
+  "available": false,
+  "publishedOn": "2023-03-01"
+}
+
+### 6. Delete: 204 No Content
+DELETE http://localhost:8080/api/books/5
+
+### 6. The same DELETE again: 404 with a problem detail
+DELETE http://localhost:8080/api/books/5
+
+### 7. A missing book: 404, application/problem+json — type, title, status, detail, instance
+GET http://localhost:8080/api/books/999
+
+### 11. The OpenAPI document (Swagger UI: http://localhost:8080/swagger-ui.html)
+GET http://localhost:8080/v3/api-docs

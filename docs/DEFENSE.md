@@ -105,6 +105,28 @@ BookService ──► BookRepository (in-memory, лаб. 5)
 - Тесты: `lab6_invalidFormIsRedisplayedWithErrors`, `lab6_validFormRedirectsWithFlash`,
   `lab6_russianMessagesAndLocaleDates`, `lab6_notFoundIsHtmlForPagesAndProblemDetailForApi`, `lab6_apiValidationReturnsProblemDetail`.
 
+### Лаб. 7 — REST API: DTO, коды ответа, ProblemDetail, OpenAPI (вариант 7)
+- **DTO и маппер** (`api/dto`): `BookRequest` — то, что может прислать клиент (нет `id` и `createdAt`),
+  `BookResponse` — то, что API обещает вернуть, `BookMapper` — единственное место, знающее обе формы
+  и доменный `record Book`. Контроллер говорит только на DTO.
+- **Пять операций** `/api/books`: GET коллекции (200), GET одной книги (200/404), POST (201 + `Location`),
+  PUT (200/404, `createdAt` сохраняется), DELETE (204, повторный — 404).
+- **Повторный DELETE → 404** осознанно: состояние сервера не меняется (идемпотентность сохраняется),
+  а клиент узнаёт, что удалять было нечего.
+- **409 Conflict**: `DuplicateTitleException` — книга с тем же названием и автором уже есть. Это бизнес-конфликт,
+  а не ошибка формата запроса, поэтому не 400 и тем более не 500. То же правило в HTML-форме показывается как ошибка поля.
+- **Ошибки из одного места**: `ApiExceptionHandler extends ResponseEntityExceptionHandler`, scoped на `@RestController`.
+  404 и 409 — свои `ProblemDetail` с `type`; 400 на невалидное тело строит базовый класс (`detail: "Invalid request content."`),
+  мы только добавляем карту `errors` с отклонёнными полями. Стектрейсов в ответах нет.
+- **Ловушка из методички**: `setProperty("title", …)` перезаписал бы стандартное поле `title` → поле названо `bookTitle`.
+- **OpenAPI**: springdoc 3.1.1 (ветка для Boot 4). `/v3/api-docs` и `/swagger-ui.html`; пути, методы и схемы
+  сгенерированы из кода, `maxLength: 120` у `title` — из `@Size(max = 120)`. Аннотации `@Tag`, `@Operation`,
+  `@ApiResponses`, `@Parameter` добавляют то, чего код сказать не может. В профиле `prod` документация выключена.
+- **Вариант 7 — HATEOAS**: `GET /api/books/{id}` возвращает `EntityModel<BookResponse>` в формате HAL
+  (`application/hal+json`) со ссылками `self`, `books` и `citation`.
+- **Связь с проектом**: REST API лаб. 5 развит, а не заменён; валидация и бандлы лаб. 6 работают и для JSON.
+- Тесты: `Lab7RestApiTests` (13 тестов), `ProdProfileTests`; запросы для демонстрации — `src/test/http/books.http`.
+
 ## 3. Сценарий демонстрации (≈5 минут)
 
 1. `./mvnw test` — 17 тестов зелёные (каждый тест = эксперимент из отчёта).
@@ -142,3 +164,22 @@ BookService ──► BookRepository (in-memory, лаб. 5)
 | `@NotNull` vs `@NotEmpty` vs `@NotBlank`? | не null / не null и длина > 0 / хотя бы один непробельный символ. |
 | Как скоупятся два advice? | По аннотации `@Controller`/`@RestController`; так как `@RestController` содержит `@Controller`, API-advice получает `HIGHEST_PRECEDENCE`. |
 | Почему `th:utext` опасен? | Не экранирует HTML → XSS. |
+| **Лаб. 7:** почему URI — существительное? | Ресурс называется URI (`/api/books`), действие — HTTP-методом; `/api/getBooks` дублирует метод в пути. |
+| Какие эндпоинты safe, какие idempotent? | Safe: GET. Idempotent: GET, PUT, DELETE. POST — ни то, ни другое. |
+| Почему создание — 201, а не 200? Что даёт `Location`? | 201 говорит «создан новый ресурс», `Location` — его URI, клиенту не нужно его угадывать. |
+| Почему удаление — 204? | Возвращать нечего; 204 = успех без тела. |
+| Что отвечает второй DELETE? | 404: состояние не меняется (идемпотентно), клиент узнаёт, что удалять было нечего. |
+| PUT vs PATCH для отсутствующего поля? | PUT заменяет ресурс целиком (поле станет пустым/по умолчанию), PATCH меняет только присланные поля. |
+| Что такое DTO и что сломается, если вернуть сущность? | Объект контракта. С сущностью: клиент задаёт `id`/`createdAt` (mass assignment), утекают внутренние поля, переименование поля в хранилище ломает клиентов. |
+| Зачем разные Request и Response? | Запрос без серверных полей, ответ с ними; иначе `id` можно прислать, а в ответе он был бы null. |
+| Где маппер и почему не в контроллере? | `api/dto/BookMapper` — `@Component`, одно место, знающее обе формы; контроллер без кода конверсии. |
+| Код на нечитаемое тело и на тело, нарушающее правило? | Оба 400 (`HttpMessageNotReadableException` и `MethodArgumentNotValidException`), оба — `ProblemDetail` от базового класса. |
+| Когда 409, а не 400? | Запрос корректен, но конфликтует с текущим состоянием (книга уже есть). 400 — сам запрос неправильный. |
+| Какой RFC? Пять полей? | RFC 9457: `type`, `title`, `status`, `detail`, `instance`. |
+| Media type ошибки и кто его ставит? | `application/problem+json`; Spring MVC, когда тело — `ProblemDetail`. |
+| Что даёт `ResponseEntityExceptionHandler`? | `ProblemDetail` для стандартных ошибок Spring MVC (400/405/406/415 и т.д.) без своего кода. |
+| Как скоупится advice? Что было бы без этого? | `annotations = RestController.class`; без скоупа HTML-страницы лаб. 6 получали бы JSON вместо страницы ошибки. |
+| Почему стектрейс нельзя отдавать? | Раскрывает внутреннее устройство (классы, версии, пути); стек — в лог, клиенту — понятный `detail`. |
+| Что в OpenAPI сгенерировано без аннотаций? Откуда `maxLength`? | Пути, методы, параметры, схемы DTO; `maxLength: 120` — из `@Size(max = 120)`. |
+| URL документа и Swagger UI? | `/v3/api-docs` и `/swagger-ui.html` (редирект на `/swagger-ui/index.html`). |
+| Почему Swagger UI нельзя оставлять открытым и как закрыть? | Раскрывает всё API и даёт консоль для запросов; в `application-prod.yml` `springdoc.api-docs.enabled=false`, `springdoc.swagger-ui.enabled=false`. |

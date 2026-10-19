@@ -426,6 +426,18 @@ a.endpoint:focus-visible { outline-offset: 1px; border-radius: 6px; }
     letter-spacing: 0.03em;
 }
 
+.method-post {
+    border-color: var(--success-border);
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+
+/* Lab 7: the newest lab spans the whole grid row, its endpoints laid out side by side */
+.card-wide { grid-column: 1 / -1; }
+@media (min-width: 640px) {
+    .endpoints-row { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px var(--space-5); }
+}
+
 .tag {
     padding: 2px var(--space-2);
     border: 1px solid #dadcf5;

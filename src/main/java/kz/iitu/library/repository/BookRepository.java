@@ -4,6 +4,7 @@ import kz.iitu.library.domain.Book;
 import kz.iitu.library.domain.Genre;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,8 @@ public class BookRepository {
 
     public Book save(Book book) {
         long id = book.id() != null ? book.id() : sequence.incrementAndGet();
-        Book stored = book.withId(id);
+        Instant createdAt = book.createdAt() != null ? book.createdAt() : Instant.now();
+        Book stored = book.withId(id).withCreatedAt(createdAt);
         storage.put(id, stored);
         return stored;
     }

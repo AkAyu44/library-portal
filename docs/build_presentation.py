@@ -207,10 +207,10 @@ def table(slide, x, y, w, rows, col_w, size=14, row_h=0.42, header_fill=DARK):
 s = new_slide(dark=True, notes=(
     "Good afternoon. I am presenting the final educational project for the course Web Application Development "
     "with Spring Framework. It is one application, a library catalogue, which combines the topics and the "
-    "individual variants of all six laboratory works."))
-circle(s, 0.9, 1.3, 0.9, GREEN, "6", size=30)
+    "individual variants of all seven laboratory works."))
+circle(s, 0.9, 1.3, 0.9, GREEN, "7", size=30)
 text(s, 0.9, 2.45, 11.5, 1.2, "Library Portal", size=60, bold=True, font=HEAD, color=WHITE)
-text(s, 0.9, 3.65, 11.5, 0.8, "Final educational project: six laboratory works in one Spring Boot application",
+text(s, 0.9, 3.65, 11.5, 0.8, "Final educational project: seven laboratory works in one Spring Boot application",
      size=24, color=CODE_TXT)
 text(s, 0.9, 5.2, 8.0, 1.4, [
     [("Kuat Bektursyn", {"bold": True, "color": WHITE})],
@@ -221,14 +221,14 @@ text(s, 8.9, 6.25, 3.8, 0.4, REPO, size=14, color=GREEN, align=PP_ALIGN.RIGHT)
 
 # =====================================================================
 # 2. Idea
-s = new_slide("The idea: six labs as six layers", notes=(
+s = new_slide("The idea: seven labs as seven layers", notes=(
     "All the labs were done in one repository, spring-lab-01, but each one on its own branch and as a separate "
     "demonstration. In the final project they become layers of one library catalogue: REST and MVC are the "
     "entry point, IoC assembles the application, configuration supplies the parameters, AOP adds cross-cutting "
-    "behaviour and forms are the user interface. Everything works on one BookService, and every experiment from "
+    "behaviour, forms are the user interface and lab 7 turns the API into a documented contract. Everything works on one BookService, and every experiment from "
     "the reports is reproduced by an automated test."))
-stats = [("6", "laboratory works\nin one application"), ("17", "integration tests —\none per experiment"),
-         ("6", "individual variants\nimplemented"), ("1", "shared BookService\nfor every layer")]
+stats = [("7", "laboratory works\nin one application"), ("32", "integration tests —\none per experiment"),
+         ("7", "individual variants\nimplemented"), ("1", "shared BookService\nfor every layer")]
 for i, (num, lbl) in enumerate(stats):
     x = 0.6 + i * 3.08
     rect(s, x, 1.65, 2.83, 2.25, SOFT)
@@ -239,11 +239,12 @@ bullets(s, 0.6, 4.8, 5.8, 2.0, [
     "Java 25, Spring Boot 4.1.1 (Spring Framework 7), Maven 3.9",
     "Spring MVC + Thymeleaf, Hibernate Validator",
     "Spring AOP (AspectJ annotations), Spring Boot Actuator",
+    "Spring HATEOAS, springdoc-openapi 3 + Swagger UI",
 ], size=15)
 text(s, 6.9, 4.3, 5.8, 0.4, "Domain", size=20, bold=True, font=HEAD, color=DARK)
 bullets(s, 6.9, 4.8, 5.8, 2.0, [
     "Book catalogue: list, details, add, delete",
-    "REST API /api/books and HTML pages /books",
+    "REST API /api/books (DTOs, HAL links, Swagger UI) and HTML pages /books",
     "Two interface languages — EN and RU",
 ], size=15)
 
@@ -251,7 +252,8 @@ bullets(s, 6.9, 4.8, 5.8, 2.0, [
 # 3. Architecture
 s = new_slide("Architecture: where each lab lives", notes=(
     "A request enters the DispatcherServlet. The LocaleChangeInterceptor from lab 6 selects the language. "
-    "The REST controllers from labs 1, 3 and 5 return JSON, the page controller returns a Thymeleaf view name. "
+    "The REST controllers from labs 1, 3, 5 and 7 return JSON — lab 7 adds request and response DTOs, a mapper "
+    "and HATEOAS links — the page controller returns a Thymeleaf view name. "
     "Errors are split between two ControllerAdvice classes. Below is the CGLIB proxy of BookService, through "
     "which the four aspects from lab 4 pass. The service itself uses the repository, the notifications from "
     "lab 2 and the citation cache, whose parameters come from the configuration of lab 3."))
@@ -265,11 +267,11 @@ def node(x, y, w, h, title, sub, lab, fill=SOFT, tc=DARK):
 
 
 node(0.6, 1.65, 3.6, 1.1, "DispatcherServlet", "LocaleChangeInterceptor · ?lang=ru", "6")
-node(4.8, 1.65, 3.8, 1.1, "@RestController", "Book, Hello, Config, System API", "1·5")
+node(4.8, 1.65, 3.8, 1.1, "@RestController + DTOs", "BookMapper · HATEOAS · OpenAPI", "1·5·7")
 node(9.2, 1.65, 3.5, 1.1, "@Controller + Thymeleaf", "BookPageController · /books", "5·6")
 node(4.8, 3.35, 7.9, 1.1, "CGLIB proxy of BookService", "Audit(1) → Logging(2) → Timing(3) → CallTracing",
      "4", fill=DARK, tc=WHITE)
-node(0.6, 3.35, 3.6, 1.1, "@ControllerAdvice", "HTML 404  ·  ProblemDetail", "6")
+node(0.6, 3.35, 3.6, 1.1, "@ControllerAdvice", "HTML 404 · ProblemDetail 404/409", "6·7")
 node(0.6, 5.15, 3.6, 1.1, "BookRepository", "in-memory, ConcurrentHashMap", "5")
 node(4.8, 5.15, 3.8, 1.1, "NotificationService", "@Primary EmailNotifier ← app.mail", "2·3")
 node(9.2, 5.15, 3.5, 1.1, "CitationCache", "app.cache.ttl / max-entries", "3")
@@ -502,6 +504,90 @@ bullets(s, 7.0, 3.85, 5.7, 3.0, [
 ], size=14, space=6)
 
 # =====================================================================
+# 9a. Lab 7 — the contract
+s = new_slide("REST API: DTOs, status codes and errors", lab=7, variant=7, notes=(
+    "Lab 7 turns the lab 5 controller into an API another team could use. What crosses the boundary is a DTO: "
+    "BookRequest carries only what a client may send — no id and no createdAt — and BookResponse carries what the "
+    "contract promises. BookMapper is the single place that knows both shapes and the Book record, so the controller "
+    "has no conversion code. Every outcome has a deliberate status: 201 with a Location header for a creation, 204 "
+    "for a deletion, 404 for a missing book — also on a repeated DELETE, because nothing changes on the server and "
+    "the client learns there was nothing to delete — and 409 for a duplicate, because the body is valid but "
+    "conflicts with the catalogue. All errors are RFC 9457 problem details from one advice."))
+flow = [("BookRequest", "JSON in · no id, no createdAt", SOFT, DARK),
+        ("BookMapper", "toDomain()", DARK, WHITE),
+        ("Book record", "service · repository · createdAt", GREEN, WHITE),
+        ("BookMapper", "toResponse()", DARK, WHITE),
+        ("BookResponse", "JSON out · id + createdAt", SOFT, DARK)]
+for i, (t, sub_, fill, tc) in enumerate(flow):
+    x = 0.6 + i * 2.5
+    rect(s, x, 1.65, 2.1, 1.0, fill)
+    text(s, x + 0.15, 1.72, 1.8, 0.4, t, size=14, bold=True, color=tc, align=PP_ALIGN.CENTER)
+    text(s, x + 0.1, 2.1, 1.9, 0.5, sub_, size=11, color=tc if fill != SOFT else MUTED, align=PP_ALIGN.CENTER)
+    if i < 4:
+        arrow(s, x + 2.1, 2.15, x + 2.5, 2.15)
+table(s, 0.6, 3.0, 7.0, [
+    ["Request", "Success", "Errors"],
+    ["GET /api/books", "200 · array", "—"],
+    ["GET /api/books/{id}", "200 · HAL", "404"],
+    ["POST /api/books", "201 + Location", "400 · 409"],
+    ["PUT /api/books/{id}", "200", "400 · 404 · 409"],
+    ["DELETE /api/books/{id}", "204", "404, also the 2nd time"],
+], [2.9, 1.9, 2.2], size=13, row_h=0.42)
+code(s, 7.9, 3.0, 4.8, 2.55, [
+    "{",
+    '  "type": ".../errors/duplicate-title",',
+    '  "title": "Duplicate title",',
+    '  "status": 409,',
+    '  "detail": "A book «Effective Java» by',
+    '             Joshua Bloch is already ...",',
+    '  "instance": "/api/books",',
+    '  "bookTitle": "Effective Java"',
+    "}",
+], size=11, title="409 · application/problem+json")
+rect(s, 0.6, 5.75, 7.0, 1.05, SOFT)
+text(s, 0.85, 5.8, 6.5, 0.95, [[("One advice: ", {"bold": True}),
+                                ("ApiExceptionHandler extends ResponseEntityExceptionHandler — the base class builds the "
+                                 "400 for an invalid body, we add 404 and 409; controllers have no try/catch", {})]],
+     size=13, anchor=MSO_ANCHOR.MIDDLE)
+rect(s, 7.9, 5.75, 4.8, 1.05, SOFT)
+text(s, 8.15, 5.8, 4.3, 0.95, [[("409, not 400: ", {"bold": True, "color": GREEN}),
+                                ("the request is valid but conflicts with the current state of the catalogue", {})]],
+     size=13, anchor=MSO_ANCHOR.MIDDLE)
+
+# =====================================================================
+# 9b. Lab 7 — OpenAPI, Swagger UI, HATEOAS
+s = new_slide("OpenAPI, Swagger UI and HATEOAS", lab=7, variant=7, notes=(
+    "springdoc-openapi 3.1.1, the line for Spring Boot 4, generates the OpenAPI document at /v3/api-docs and serves "
+    "Swagger UI at /swagger-ui.html. Without a single annotation it already knows the paths, the methods, the "
+    "parameters and the DTO schemas — even maxLength 120 of the title, taken from @Size. The annotations @Tag, "
+    "@Operation, @ApiResponses and @Parameter add what the code cannot say: summaries, the meaning of each status "
+    "code, examples. Here Swagger UI executes GET /api/books/999 and shows the 404 problem detail. Under the prod "
+    "profile the document and the page are switched off. My variant 7 is HATEOAS: GET of one book returns an "
+    "EntityModel in HAL format with links to itself, to the collection and to its citation."))
+rect(s, 0.55, 1.6, 6.7, 4.23, WHITE, line=LINE)
+s.shapes.add_picture(str(Path(__file__).with_name("img") / "swagger-404.jpg"),
+                     Inches(0.6), Inches(1.65), width=Inches(6.6))
+text(s, 0.6, 5.95, 6.6, 0.4, "Swagger UI · Try it out · GET /api/books/999 → 404, application/problem+json",
+     size=12, color=MUTED)
+bullets(s, 7.6, 1.65, 5.1, 2.4, [
+    [("Generated: ", {"bold": True}), ("paths, methods, parameters, DTO schemas", {})],
+    [("maxLength: 120 ", {"bold": True}), ("of title ← @Size(max = 120)", {})],
+    [("Annotated: ", {"bold": True}), ("@Tag, @Operation, @ApiResponses, @Parameter", {})],
+    [("Closed in prod: ", {"bold": True}), ("springdoc.*.enabled = false", {})],
+], size=14, space=6)
+code(s, 7.6, 4.15, 5.1, 2.65, [
+    '{ "id": 1, "title": "Effective Java", ...',
+    '  "_links": {',
+    '    "self":     {"href": ".../books/1"},',
+    '    "books":    {"href": ".../books"},',
+    '    "citation": {"href": ".../books/1/citation"}',
+    "  } }",
+    "",
+    "EntityModel.of(book, linkTo(...).withSelfRel(),",
+    '  ... withRel("books"), ... withRel("citation"))',
+], size=10.5, title="Variant 7 · HATEOAS · application/hal+json")
+
+# =====================================================================
 # 10. Integration
 s = new_slide("Not side by side, but together: how labs connect", notes=(
     "The main difference between the final project and a set of labs is the connections. Configuration controls "
@@ -511,7 +597,7 @@ links = [("2 → 5", "New book notifications", "BookService.create() calls the @
          ("3 → 2", "Mail depends on the profile", "dev: mail disabled · prod: retry-count = 5"),
          ("3 → 5", "Citation cache from app.cache", "1 min / 100 entries, under dev — 30 s / 50"),
          ("4 → all", "Every operation is wrapped", "Audit · Log · Time · Trace on the whole service layer"),
-         ("6 → 5", "JSON validation in the API", "BookRequest: the same constraints and messages → 400"),
+         ("6 ↔ 7", "Shared rules: API and form", "Lab 6 constraints validate the JSON; the 409 rule shows as a form error"),
          ("4 + 6", "Client error is 400", "delete(0): @AfterThrowing, audit failure, ProblemDetail")]
 for i, (tag, head, body) in enumerate(links):
     col, row = i % 3, i // 3
@@ -528,11 +614,11 @@ for i, (tag, head, body) in enumerate(links):
 # 11. Tests (native chart)
 s = new_slide("Every experiment is an automated test", notes=(
     "So that the defence does not depend on screenshots, every experiment from the reports is written as a "
-    "MockMvc integration test. There are 17 of them: they check status codes, validation errors, Russian "
+    "MockMvc integration test. There are 32 of them, 14 for lab 7 alone: they check status codes, validation errors, Russian "
     "messages, the proxy, self-invocation and the dev profile. One command, mvnw test, and everything is green."))
 cd = CategoryChartData()
-cd.categories = ["Lab 1", "Lab 2", "Lab 3", "Lab 4", "Lab 5", "Lab 6"]
-cd.add_series("Tests", (1, 2, 2, 3, 4, 5))
+cd.categories = ["Lab 1", "Lab 2", "Lab 3", "Lab 4", "Lab 5", "Lab 6", "Lab 7"]
+cd.add_series("Tests", (1, 2, 2, 3, 5, 5, 14))
 gf = s.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(0.6), Inches(1.6), Inches(7.2), Inches(5.2), cd)
 ch = gf.chart
 ch.has_legend = False
@@ -556,7 +642,7 @@ ch.category_axis.tick_labels.font.size = Pt(13)
 ch.category_axis.tick_labels.font.color.rgb = MUTED
 ch.category_axis.format.line.color.rgb = LINE
 rect(s, 8.3, 1.65, 4.4, 2.0, DARK)
-text(s, 8.3, 1.75, 4.4, 1.0, "17 / 17", size=48, bold=True, font=HEAD, color=GREEN, align=PP_ALIGN.CENTER)
+text(s, 8.3, 1.75, 4.4, 1.0, "32 / 32", size=48, bold=True, font=HEAD, color=GREEN, align=PP_ALIGN.CENTER)
 text(s, 8.3, 2.85, 4.4, 0.5, "./mvnw test  →  BUILD SUCCESS", size=14, color=WHITE, font=MONO,
      align=PP_ALIGN.CENTER)
 bullets(s, 8.3, 4.0, 4.4, 2.9, [
@@ -564,6 +650,7 @@ bullets(s, 8.3, 4.0, 4.4, 2.9, [
     "form errors in EN and RU, flash + redirect",
     "CGLIB proxy and self-invocation: 0 vs 2 records",
     "dev profile: port 8081, ttl PT30S",
+    "201 + Location, 404/409 problem details, HAL, OpenAPI",
 ], size=14, space=6)
 
 # =====================================================================
@@ -571,28 +658,31 @@ bullets(s, 8.3, 4.0, 4.4, 2.9, [
 s = new_slide("Demonstration script", notes=(
     "The demonstration takes about five minutes. First the tests, then the start page with a card for each lab, "
     "the Russian form with errors, adding a book correctly and the aspect log in the console, the "
-    "self-invocation experiment, two different 404 responses and a restart with the dev profile."))
-demo = [("./mvnw test", "17 tests are green"),
+    "self-invocation experiment, the lab 7 requests from books.http and Swagger UI, two different 404 "
+    "responses and a restart with the dev profile."))
+demo = [("./mvnw test", "32 tests are green"),
         ("./mvnw spring-boot:run → /", "start page: links for every lab"),
         ("/books/new?lang=ru → «Сохранить»", "all validation errors in Russian"),
         ("Valid form → F5", "redirect + flash, no duplicate; [AUDIT] and EMAIL in the log"),
         ("DELETE /api/books/bulk?ids=1,2&viaProxy=false|true", "/api/system/audit: 0 and 2 records"),
-        ("/books/999 and /api/books/999", "HTML page vs ProblemDetail"),
+        ("books.http: POST → POST again → DELETE ×2", "201 + Location, 409, 204, 404"),
+        ("/swagger-ui.html → GET /api/books/999", "404 problem detail inside Swagger UI"),
+        ("/books/999 and /api/books/1", "HTML 404 page vs HAL with _links"),
         ("-Dspring-boot.run.profiles=dev → /api/config", "port 8081, PT30S, DEVELOPMENT")]
 for i, (cmd, res) in enumerate(demo):
-    y = 1.6 + i * 0.75
-    circle(s, 0.6, y + 0.05, 0.5, GREEN if i % 2 == 0 else DARK, str(i + 1), size=14)
-    text(s, 1.35, y, 6.6, 0.6, cmd, size=14, bold=True, font=MONO, color=DARK, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, 8.0, y, 4.7, 0.6, res, size=14, color=MUTED, anchor=MSO_ANCHOR.MIDDLE)
+    y = 1.55 + i * 0.585
+    circle(s, 0.6, y + 0.04, 0.44, GREEN if i % 2 == 0 else DARK, str(i + 1), size=13)
+    text(s, 1.3, y, 6.6, 0.52, cmd, size=13, bold=True, font=MONO, color=DARK, anchor=MSO_ANCHOR.MIDDLE)
+    text(s, 8.0, y, 4.7, 0.52, res, size=13, color=MUTED, anchor=MSO_ANCHOR.MIDDLE)
 
 # =====================================================================
 # 13. Q&A
 s = new_slide("Key defence questions", notes=(
     "These are the most frequent questions across all labs. The full list with answers is in docs/DEFENSE.md."))
 qa = [("Why constructor injection?", "final fields, the object is always complete, easy to test"),
-      ("A prototype inside a singleton?", "created once; a fresh one only through ObjectProvider"),
+      ("Why 201 and a Location header?", "a new resource was created; Location names its URI"),
       ("Profile file or --argument?", "the command-line argument: a profile is just a PropertySource"),
-      ("What if proceed() is removed?", "the target method is never executed"),
+      ("When 409 and not 400?", "the request is valid but conflicts with the current state"),
       ("Why is self-invocation not advised?", "this.method() skips the proxy → use a self reference"),
       ("What do 405 / 415 / 406 mean?", "wrong method / body media type / response media type"),
       ("Why a separate BookForm?", "protects from mass assignment, keeps the user input"),
@@ -607,13 +697,13 @@ for i, (q, a) in enumerate(qa):
 # =====================================================================
 # 14. Closing
 s = new_slide(dark=True, notes=(
-    "To sum up: six laboratory works are combined into one working application where each topic is a layer of the "
+    "To sum up: seven laboratory works are combined into one working application where each topic is a layer of the "
     "system, the individual variants are implemented and connected to each other, and the experiments are "
     "verified by tests. Thank you for your attention, I am ready to answer your questions."))
 text(s, 0.9, 1.0, 11.5, 1.0, "Summary", size=48, bold=True, font=HEAD, color=WHITE)
-results = [("One application", "a library catalogue instead of six separate demos"),
-           ("Six variants", "V7 · V8 · V7 · V8 · V6 · V7 — implemented and connected"),
-           ("17 tests", "every experiment from the reports is reproduced")]
+results = [("One application", "a library catalogue instead of seven separate demos"),
+           ("Seven variants", "V7 · V8 · V7 · V8 · V6 · V7 · V7 — implemented and connected"),
+           ("32 tests", "every experiment from the reports is reproduced")]
 for i, (h, b) in enumerate(results):
     x = 0.9 + i * 3.95
     circle(s, x, 2.5, 0.75, GREEN, str(i + 1), size=20)

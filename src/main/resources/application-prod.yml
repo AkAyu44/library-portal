@@ -11,6 +11,13 @@ app:
     retry-count: 5
     enabled: true
 
+# Lab 7: the API description and its test console must not be public in production
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
 logging:
   level:
     kz.iitu.library: WARN

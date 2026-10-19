@@ -56,18 +56,25 @@ public class BookService {
 
     @Audited(action = "BOOK_CREATE", logArguments = true)
     public Book create(Book book) {
-        Book saved = repository.save(book.withId(null));
+        rejectDuplicate(book, null);    // Lab 7: 409
+        Book saved = repository.save(book.withId(null).withCreatedAt(null));
         notifications.viaPrimary("New book in the catalogue: " + saved.title());
         return saved;
     }
 
     @Audited(action = "BOOK_UPDATE", logArguments = true)
     public Book update(long id, Book book) {
-        findById(id);   // throws BookNotFoundException
+        Book existing = findById(id);   // throws BookNotFoundException
+        rejectDuplicate(book, id);
         citations.evict(id);
-        return repository.save(book.withId(id));
+        // PUT replaces the client's fields; the server-owned createdAt survives
+        return repository.save(book.withId(id).withCreatedAt(existing.createdAt()));
     }
 
+    /**
+     * Lab 7: a second DELETE of the same id answers 404 — the state of the server does not
+     * change (DELETE stays idempotent) and the client learns there was nothing to delete.
+     */
     @Audited(action = "BOOK_DELETE", logArguments = true)
     public boolean delete(long id) {
         if (id <= 0) {
@@ -75,6 +82,17 @@ public class BookService {
         }
         citations.evict(id);
         return repository.deleteById(id);
+    }
+
+    /** Same title and same author (ignoring case) is the same book; ignoreId lets PUT keep its own. */
+    private void rejectDuplicate(Book candidate, Long ignoreId) {
+        boolean taken = repository.findAll().stream()
+                .filter(b -> !b.id().equals(ignoreId))
+                .anyMatch(b -> b.title().equalsIgnoreCase(candidate.title().trim())
+                        && b.author().equalsIgnoreCase(candidate.author().trim()));
+        if (taken) {
+            throw new DuplicateTitleException(candidate.title(), candidate.author());
+        }
     }
 
     /**

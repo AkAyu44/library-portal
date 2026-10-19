@@ -5,22 +5,25 @@
 **Co-authors of individual labs:** Bekbaev Gibrat (labs 3, 4, 5)
 
 One Spring Boot application — a library catalogue — that combines the topics and
-individual variants of laboratory works 1–6. Every lab is not a separate demo, but a layer of
-the same system: the REST API from lab 1 and 5, the IoC beans from lab 2, the configuration
+individual variants of laboratory works 1–7. Every lab is not a separate demo, but a layer of
+the same system: the REST API from labs 1, 5 and 7, the IoC beans from lab 2, the configuration
 from lab 3, the aspects from lab 4 and the forms from lab 6 all work on the same `BookService`.
 
 Stack: **Java 25, Spring Boot 4.1.1** (Spring Framework 7), Spring MVC, Thymeleaf,
-Hibernate Validator, Spring AOP (AspectJ annotations), Actuator, Maven 3.9.
+Hibernate Validator, Spring AOP (AspectJ annotations), Actuator, Spring HATEOAS,
+springdoc-openapi 3 (Swagger UI), Maven 3.9.
 
 ## Run
 
 ```bash
 ./mvnw spring-boot:run                                   # http://localhost:8080
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev    # http://localhost:8081
-./mvnw test                                              # 17 integration tests, one per lab experiment
+./mvnw test                                              # 32 integration tests, one per lab experiment
 ```
 
-The start page `http://localhost:8080/` lists links to every demonstration endpoint.
+The start page `http://localhost:8080/` lists links to every demonstration endpoint;
+Swagger UI is at `http://localhost:8080/swagger-ui.html`, and `src/test/http/books.http`
+holds the Lab 7 demonstration requests for the IntelliJ HTTP client.
 
 ## What each lab contributes
 
@@ -32,6 +35,21 @@ The start page `http://localhost:8080/` lists links to every demonstration endpo
 | 4 | Spring AOP | `aspect/*`, `audit/Audited`, `audit/AuditLog` — advise every public method of `kz.iitu.library.service..*` | **V8** `CallTracingAspect` — indentation by nesting depth |
 | 5 | Spring MVC: REST + MVC controllers, status codes, static resources | `domain/Book`, `repository/BookRepository`, `service/BookService`, `api/BookRestController`, `web/BookPageController`, `templates/books/list.html`, `static/` | **V6** `GET /api/books/{id}/citation`, `text/plain` |
 | 6 | Forms, Bean Validation, i18n, `@ControllerAdvice` | `web/BookForm`, `validation/NoDigits`, `config/LocaleConfiguration`, `messages*.properties`, `web/PageExceptionHandler`, `api/ApiExceptionHandler` | **V7** `publishedOn` — `LocalDate`, `@PastOrPresent`, locale-dependent `@DateTimeFormat` |
+| 7 | REST API: DTOs and a mapper, status codes, ProblemDetail, OpenAPI | `api/dto/{BookRequest,BookResponse,BookMapper}`, `api/BookRestController`, `api/ApiExceptionHandler` (extends `ResponseEntityExceptionHandler`), `service/DuplicateTitleException`, `config/OpenApiConfig` → `/v3/api-docs`, `/swagger-ui.html` | **V7** HATEOAS — `GET /api/books/{id}` is an `EntityModel` with `self`, `books` and `citation` links |
+
+### Lab 7: the contract of `/api/books`
+
+| Method and URI | Request body | Success | Errors (all `application/problem+json`) |
+|----------------|--------------|---------|------------------------------------------|
+| `GET /api/books?author=&limit=` | — | 200, array of `BookResponse` | — |
+| `GET /api/books/{id}` | — | 200, HAL `BookResponse` + `_links` | 404 |
+| `POST /api/books` | `BookRequest` | 201 + `Location`, `BookResponse` | 400 (invalid / unparsable), 409 (same title and author) |
+| `PUT /api/books/{id}` | `BookRequest` | 200, `BookResponse` (`createdAt` kept) | 400, 404, 409 |
+| `DELETE /api/books/{id}` | — | 204 | 404 — also on a repeated DELETE |
+
+`BookRequest` has no `id` and no `createdAt`: those belong to the server. A repeated DELETE answers
+404 on purpose: the state of the server does not change (DELETE stays idempotent), and the client
+learns there was nothing to delete. Under the `prod` profile `/v3/api-docs` and Swagger UI are switched off.
 
 ### How the labs are connected (not just placed side by side)
 
@@ -42,8 +60,10 @@ The start page `http://localhost:8080/` lists links to every demonstration endpo
   1 minute / 100 entries by default, 30 s / 50 entries under `dev`.
 - **Lab 4 → everything.** Every request to the catalogue passes through Audit → Logging → Timing → Tracing aspects.
   `BookService → CitationCache` calls show a real nested trace (variant 8).
-- **Lab 6 → Lab 5.** The REST API validates its JSON body (`BookRequest`) with the same constraints and the same
-  bundles as the HTML form; errors come back as RFC 9457 `ProblemDetail`.
+- **Lab 6 → Lab 7.** The REST API validates its JSON body (`BookRequest`) with the same constraints and the same
+  bundles as the HTML form.
+- **Lab 7 → Lab 6.** The 409 duplicate rule lives in the service, so the HTML form shows it as a field error.
+- **Lab 3 → Lab 7.** The `prod` profile closes the OpenAPI document and Swagger UI.
 - **Lab 4 + Lab 6.** `delete(0)` throws `IllegalArgumentException`: `@AfterThrowing` logs it, `AuditAspect` records the
   failure and rethrows, `ApiExceptionHandler` turns it into **400** (lab 4 returned 500).
 
@@ -64,40 +84,46 @@ The start page `http://localhost:8080/` lists links to every demonstration endpo
 | `DELETE /api/books/bulk?ids=1,2&viaProxy=false` | 4 | self-invocation: **0** BOOK_DELETE audit records |
 | `DELETE /api/books/bulk?ids=1,2&viaProxy=true` | 4 | via `self` proxy: **2** audit records |
 | `GET /api/system/audit` | 4 | last audit records |
-| `GET/POST /api/books`, `GET/PUT/DELETE /api/books/{id}` | 5 | 200, 201 + Location, 204, 404 |
+| `GET/POST /api/books`, `GET/PUT/DELETE /api/books/{id}` | 5, 7 | 200, 201 + Location, 204, 404, 409 |
 | `GET /api/books/{id}/citation` | 5 (V6) | `text/plain`; `Accept: application/json` → 406 |
 | `GET /api/books/abc` · `/api/nothing` · `DELETE /api/books` · `text/plain` body · `Accept: xml` | 5 | 400 · 404 · 405 · 415 · 406 |
 | `GET /books`, `/books/{id}`, `/books/new` (`?lang=ru`) | 5, 6 | Thymeleaf pages, form, PRG + flash |
-| `GET /books/999` vs `GET /api/books/999` | 6 | HTML 404 page vs `application/problem+json` |
+| `GET /books/999` vs `GET /api/books/999` | 6, 7 | HTML 404 page vs `application/problem+json` |
+| `GET /api/books/1` | 7 (V7) | HAL: fields + `_links.self`, `_links.books`, `_links.citation` |
+| `GET /v3/api-docs`, `GET /swagger-ui.html` | 7 | OpenAPI document, Swagger UI |
 
 ## Project structure
 
 ```
 src/main/java/kz/iitu/library/
 ├── LibraryPortalApplication.java   @SpringBootApplication, @ConfigurationPropertiesScan
-├── api/          BookRestController, BookRequest, SystemController, ApiExceptionHandler
+├── api/          BookRestController, SystemController, ApiExceptionHandler
+│   └── dto/      BookRequest, BookResponse, BookMapper            (lab 7)
 ├── aspect/       Pointcuts, AuditAspect(1), LoggingAspect(2), TimingAspect(3), CallTracingAspect
 ├── audit/        @Audited, AuditLog
 ├── config/       AppProperties, EnvironmentBanner(+dev/prod/default), FormatConfig,
-│                 LocaleConfiguration, ContainerReport
+│                 LocaleConfiguration, ContainerReport, OpenApiConfig
 ├── domain/       Book (record), Genre (enum)
 ├── lifecycle/    LifecycleDemo
 ├── notify/       Notifier, Console/Email/Noop/Html notifiers, NotificationService
 ├── repository/   BookRepository (in-memory)
 ├── scope/        Ticket (prototype), TicketOffice
-├── service/      BookService, CitationCache, BookNotFoundException
+├── service/      BookService, CitationCache, BookNotFoundException, DuplicateTitleException
 ├── validation/   @NoDigits, NoDigitsValidator
 └── web/          HelloController, ConfigController, BookPageController, BookForm, PageExceptionHandler
 src/main/resources/
 ├── application.yml, application-dev.yml, application-prod.yml
 ├── messages.properties, messages_ru.properties
-├── static/       index.html, css/app.css
+├── static/       index.html, css/app.css, img/bookshelf.svg
 └── templates/    books/{list,form,details}.html, error/not-found.html, fragments/layout.html
+src/test/
+├── java/kz/iitu/library/   LibraryPortalApplicationTests, Lab7RestApiTests, DevProfileTests, ProdProfileTests
+└── http/books.http         Lab 7 demonstration requests
 ```
 
 ## Defence materials
 
-- [`docs/Defense_Presentation.pptx`](docs/Defense_Presentation.pptx) — the presentation (English, speaker notes included).
-- [`docs/Defense_Presentation_RU.pptx`](docs/Defense_Presentation_RU.pptx) — the same presentation in Russian.
+- [`docs/Defense_Presentation.pptx`](docs/Defense_Presentation.pptx) — the presentation (English, labs 1–7, speaker notes included).
+- [`docs/Defense_Presentation_RU.pptx`](docs/Defense_Presentation_RU.pptx) — the earlier Russian version (labs 1–6).
 - `docs/build_presentation.py` / `docs/build_presentation_ru.py` regenerate the decks (`pip install python-pptx`).
 - [`docs/DEFENSE.md`](docs/DEFENSE.md) — what was done in each lab, the demo script and answers to the defence questions.

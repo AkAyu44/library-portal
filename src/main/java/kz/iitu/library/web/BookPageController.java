@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kz.iitu.library.domain.Book;
 import kz.iitu.library.domain.Genre;
 import kz.iitu.library.service.BookService;
+import kz.iitu.library.service.DuplicateTitleException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -59,7 +60,15 @@ public class BookPageController {
             model.addAttribute("genres", Genre.values());   // the POST model is new
             return "books/form";
         }
-        Book saved = service.create(form.toBook());
+        Book saved;
+        try {
+            saved = service.create(form.toBook());
+        } catch (DuplicateTitleException ex) {
+            // Lab 7: the same 409 rule the API has, shown to a person as a field error
+            binding.rejectValue("title", "book.duplicate", new Object[]{form.getTitle()}, ex.getMessage());
+            model.addAttribute("genres", Genre.values());
+            return "books/form";
+        }
         redirect.addFlashAttribute("addedTitle", saved.title());
         return "redirect:/books";                // 302 → the browser performs GET /books
     }

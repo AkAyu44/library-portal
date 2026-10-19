@@ -189,6 +189,7 @@ class LibraryPortalApplicationTests {
                 "href=\"api/books\"", "href=\"api/books?author=Bloch&amp;limit=1\"",
                 "href=\"api/books/1/citation\"",
                 "href=\"books/new?lang=ru\"", "href=\"books/999\"", "href=\"api/books/999\"",
+                "href=\"swagger-ui.html\"", "href=\"v3/api-docs\"", "href=\"api/books/1\"",
                 "SLOW warning", "variant 6", "variant 7", "variant 8");
         assertThat(html).doesNotContain("localhost");
     }

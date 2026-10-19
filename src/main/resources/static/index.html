@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Library Portal — final educational project for RWPSF 3305 at IITU: laboratory works 1–6 in one Spring Boot application.">
+    <meta name="description" content="Library Portal — final educational project for RWPSF 3305 at IITU: laboratory works 1–7 in one Spring Boot application.">
     <title>Library Portal</title>
     <!-- relative URLs: no hardcoded host, port or context path -->
     <link rel="stylesheet" href="css/app.css">
@@ -17,9 +17,9 @@
 
 <main class="page">
     <section class="hero" aria-labelledby="page-title">
-        <p class="eyebrow"><span>RWPSF 3305 · IITU ·</span> <span class="nowrap">Laboratory works 1–6</span></p>
+        <p class="eyebrow"><span>RWPSF 3305 · IITU ·</span> <span class="nowrap">Laboratory works 1–7</span></p>
         <h1 id="page-title">Library Portal</h1>
-        <p class="lead">Final educational project — RWPSF 3305, IITU. One application, all topics of laboratory works 1–6.
+        <p class="lead">Final educational project — RWPSF 3305, IITU. One application, all topics of laboratory works 1–7.
             This page is a static resource (Lab 5): it is served from <code>static/index.html</code> without a controller.</p>
     </section>
 
@@ -119,6 +119,27 @@
                     <span class="note">HTML 404</span></li>
                 <li><a class="endpoint" href="api/books/999">/api/books/999</a>
                     <span class="note">ProblemDetail</span></li>
+            </ul>
+        </article>
+
+        <article class="card card-wide">
+            <div class="card-head">
+                <span class="card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                </span>
+                <h2 class="card-title"><span class="card-kicker">Lab 7</span>REST API, DTOs &amp; OpenAPI</h2>
+            </div>
+            <ul class="endpoints endpoints-row">
+                <li><a class="endpoint" href="swagger-ui.html">/swagger-ui.html</a>
+                    <span class="note">Swagger UI</span></li>
+                <li><a class="endpoint" href="v3/api-docs">/v3/api-docs</a>
+                    <span class="note">OpenAPI document</span></li>
+                <li><a class="endpoint" href="api/books/1">/api/books/1</a>
+                    <span class="tag">variant 7</span>
+                    <span class="note">HATEOAS links</span></li>
+                <li><span class="method method-post">POST</span>
+                    <code class="endpoint endpoint-static" title="A POST request — run it with curl or from Swagger UI">/api/books</code>
+                    <span class="note">201 + Location · 409 on a duplicate</span></li>
             </ul>
         </article>
     </section>

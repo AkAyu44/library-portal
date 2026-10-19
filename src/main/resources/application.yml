@@ -28,6 +28,11 @@ logging:
   level:
     kz.iitu.library: INFO
 
+# Lab 7: OpenAPI document at /v3/api-docs, Swagger UI at /swagger-ui.html;
+# only the REST API is documented, not the Thymeleaf pages or Actuator
+springdoc:
+  paths-to-match: /api/**
+
 management:
   endpoints:
     web:
