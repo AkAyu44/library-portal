@@ -128,3 +128,4 @@ src/test/
 - `docs/build_presentation.py` / `docs/build_presentation_ru.py` regenerate the decks (`pip install python-pptx`).
 - [`docs/DEFENSE.md`](docs/DEFENSE.md) — what was done in each lab, the demo script and answers to the defence questions.
 - [`docs/DEFENSE_GUIDE.md`](docs/DEFENSE_GUIDE.md) — step-by-step defence script (in Russian): what to open, what to show, what to say.
+- [`docs/DEFENSE_SITE_TESTS.md`](docs/DEFENSE_SITE_TESTS.md) — the same without showing code: presentation text in Russian, tests, and the site/Swagger UI walk-through.
