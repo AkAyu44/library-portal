@@ -127,3 +127,4 @@ src/test/
 - [`docs/Defense_Presentation_RU.pptx`](docs/Defense_Presentation_RU.pptx) — the earlier Russian version (labs 1–6).
 - `docs/build_presentation.py` / `docs/build_presentation_ru.py` regenerate the decks (`pip install python-pptx`).
 - [`docs/DEFENSE.md`](docs/DEFENSE.md) — what was done in each lab, the demo script and answers to the defence questions.
+- [`docs/DEFENSE_GUIDE.md`](docs/DEFENSE_GUIDE.md) — step-by-step defence script (in Russian): what to open, what to show, what to say.
