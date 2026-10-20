@@ -124,6 +124,7 @@ src/test/
 ## Defence materials
 
 - [`docs/Defense_Presentation.pptx`](docs/Defense_Presentation.pptx) — the presentation (English, labs 1–7, speaker notes included).
+- [`docs/Defense_Presentation_Formal.pptx`](docs/Defense_Presentation_Formal.pptx) — the same content in a formal navy-and-gold style, with screenshots of the running application (18 slides).
 - [`docs/Defense_Presentation_RU.pptx`](docs/Defense_Presentation_RU.pptx) — the earlier Russian version (labs 1–6).
 - `docs/build_presentation.py` / `docs/build_presentation_ru.py` regenerate the decks (`pip install python-pptx`).
 - [`docs/DEFENSE.md`](docs/DEFENSE.md) — what was done in each lab, the demo script and answers to the defence questions.
