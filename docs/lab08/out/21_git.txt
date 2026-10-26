@@ -1,0 +1,12 @@
+$ git add .
+$ git commit -m "lab08: PostgreSQL, entities, associations, queries, paging"
+[lab08 dc290ed] lab08: PostgreSQL, entities, associations, queries, paging
+ 95 files changed, 3072 insertions(+), 138 deletions(-)
+$ git push -u origin lab08
+To https://github.com/AkAyu44/library-portal.git
+ * [new branch]      lab08 -> lab08
+branch 'lab08' set up to track 'origin/lab08'.
+$ git log --oneline -3
+dc290ed lab08: PostgreSQL, entities, associations, queries, paging
+fe099ac docs: formal navy-and-gold defence deck with screenshots of the application
+762481e docs: defence script without code — presentation text, tests, site walk-through
