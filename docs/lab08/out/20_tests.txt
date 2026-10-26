@@ -1,0 +1,13 @@
+$ ./mvnw test
+[INFO] Running kz.iitu.library.DevProfileTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.19 s -- in kz.iitu.library.DevProfileTests
+[INFO] Running kz.iitu.library.Lab7RestApiTests
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.556 s -- in kz.iitu.library.Lab7RestApiTests
+[INFO] Running kz.iitu.library.Lab8RepositoryTests
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.371 s -- in kz.iitu.library.Lab8RepositoryTests
+[INFO] Running kz.iitu.library.LibraryPortalApplicationTests
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.435 s -- in kz.iitu.library.LibraryPortalApplicationTests
+[INFO] Running kz.iitu.library.ProdProfileTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.137 s -- in kz.iitu.library.ProdProfileTests
+[INFO] Tests run: 41, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS

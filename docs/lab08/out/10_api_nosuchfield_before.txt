@@ -1,0 +1,8 @@
+$ curl -s -i "localhost:8080/api/books?sort=nosuchfield"
+HTTP/1.1 500 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 26 Oct 2026 14:36:01 GMT
+Connection: close
+
+{"timestamp":"2026-10-26T14:36:01.702Z","status":500,"error":"Internal Server Error","trace":"org.springframework.data.core.PropertyReferenceException: No property 'nosuchfield' found for type 'Book'\r\n\tat org.springframework.data.core.SimplePropertyPath.<init>(SimplePropertyPath.java:94)\r\n\tat org.springframework.data.core.SimplePropertyPath.create(SimplePropertyPath.java:322)\r\n\tat org.springframework.data.core.SimplePropertyPath.create(SimplePropertyPath.java:297)\r\n\tat org.springframework.data.cor ... (stack trace cut)","message":"No property 'nosuchfield' found for type 'Book'","path":"/api/books"}

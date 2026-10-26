@@ -17,7 +17,7 @@ public class OpenApiConfig {
         return new OpenAPI().info(new Info()
                 .title("Library Portal API")
                 .version("1.0.0")
-                .description("REST API of the book catalogue — RWPSF 3305, IITU, laboratory work 7. "
+                .description("REST API of the book catalogue — RWPSF 3305, IITU, laboratory works 7-8 (PostgreSQL, paging). "
                         + "Errors are RFC 9457 problem details (application/problem+json)."));
     }
 }

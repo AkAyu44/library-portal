@@ -7,6 +7,22 @@ spring:
   messages:
     # Lab 6: without this a locale with no own bundle (en) falls back to the OS locale
     fallback-to-system-locale: false
+  # Lab 8: PostgreSQL instead of the in-memory list
+  datasource:
+    url: jdbc:postgresql://localhost:5432/springlab
+    username: springlab
+    password: springlab
+  jpa:
+    open-in-view: false          # no lazy loading during view rendering: the service is the boundary
+    hibernate:
+      ddl-auto: create-drop      # for this class only: schema from the entities, dropped on shutdown
+    show-sql: true               # you will need to read the SQL
+    properties:
+      hibernate.format_sql: true
+  data:
+    web:
+      pageable:
+        max-page-size: 50        # ?size=100000 cannot ask for the whole table
 
 server:
   port: 8080

@@ -15,7 +15,7 @@
 
     <dl class="details">
         <dt th:text="#{book.author}">Author</dt>
-        <dd th:text="${book.author}">Author</dd>
+        <dd th:text="${book.author?.name}">Author</dd>
         <dt th:text="#{book.year}">Year</dt>
         <dd th:text="${book.year}">2020</dd>
         <dt th:text="#{book.genre}">Genre</dt>
@@ -24,6 +24,8 @@
         <dd th:text="${book.publishedOn} ? ${#temporals.format(book.publishedOn, 'd MMMM yyyy')} : '—'">1 May 2020</dd>
         <dt th:text="#{book.available}">Available</dt>
         <dd th:text="${book.available} ? #{yes} : #{no}">yes</dd>
+        <dt th:text="#{book.tags}">Tags</dt>
+        <dd th:text="${book.tags.isEmpty()} ? '—' : ${#strings.listJoin(book.tags.![name], ', ')}">java, classic</dd>
         <dt th:text="#{book.citation}">Citation</dt>
         <dd><code th:text="${citation}">Author (2020). Title.</code></dd>
     </dl>

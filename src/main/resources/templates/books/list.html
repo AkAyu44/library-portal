@@ -22,7 +22,8 @@
         <a th:href="@{/books}" th:text="#{books.filter.reset}">Reset</a>
     </form>
 
-    <p class="muted" th:text="#{books.count(${#lists.size(books)})}">Books found: 3</p>
+    <!-- Lab 8: books is a Page — content of this page plus the total from the count query -->
+    <p class="muted" th:text="#{books.count(${books.totalElements})}">Books found: 3</p>
 
     <div class="table-wrap">
     <table>
@@ -35,10 +36,10 @@
             <th th:text="#{book.published}">Publication date</th>
             <th th:text="#{book.available}">Available</th>
         </tr>
-        <tr th:each="b : ${books}">
+        <tr th:each="b : ${books.content}">
             <td th:text="${b.id}">1</td>
             <td><a th:href="@{/books/{id}(id=${b.id})}" th:text="${b.title}">Title</a></td>
-            <td th:text="${b.author}">Author</td>
+            <td th:text="${b.author?.name}">Author</td>
             <td th:text="${b.year}">2020</td>
             <td th:text="${b.genre} ? #{'genre.' + ${b.genre}} : '—'">Novel</td>
             <td th:text="${b.publishedOn} ? ${#temporals.format(b.publishedOn, 'd MMMM yyyy')} : '—'">1 May 2020</td>
@@ -46,6 +47,14 @@
         </tr>
     </table>
     </div>
+
+    <nav class="pager" th:if="${books.totalPages > 1}">
+        <a th:if="${books.hasPrevious()}"
+           th:href="@{/books(page=${books.number - 1}, author=${author})}" th:text="#{page.previous}">Previous</a>
+        <span th:text="#{page.of(${books.number + 1}, ${books.totalPages})}">Page 1 of 2</span>
+        <a th:if="${books.hasNext()}"
+           th:href="@{/books(page=${books.number + 1}, author=${author})}" th:text="#{page.next}">Next</a>
+    </nav>
 </main>
 </body>
 </html>

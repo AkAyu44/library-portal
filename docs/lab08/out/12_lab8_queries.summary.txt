@@ -1,0 +1,50 @@
+$ curl -s -X POST "localhost:8080/api/lab8/queries"
+# (JSON response condensed: method, rows, statements and the SQL Hibernate sent)
+
+> findByGenre(PROGRAMMING)
+  result: Effective Java (2018), Java Puzzlers (2005), Java Concurrency in Practice (2006), Spring in Action (2022), Spring
+    Boot in Action (2015)
+  rows = 5   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,a1_0.id,a1_0.country,a1_0.name,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,
+             b1_0.title,b1_0.version,b1_0.year from book b1_0 left join author a1_0 on a1_0.id=b1_0.author_id where b1_0.genre=?
+
+> findByTitleContainingIgnoreCase("java")
+  result: Effective Java (2018), Java Puzzlers (2005), Java Concurrency in Practice (2006)
+  rows = 3   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,b1_0.author_id,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,b1_0.title,b1_0.
+             version,b1_0.year from book b1_0 where upper(b1_0.title) like upper(?) escape '\'
+
+> findByYearBetweenOrderByYearDesc(2005, 2018)
+  result: Effective Java (2018), Brief Answers to the Big Questions (2018), Spring Boot in Action (2015), Java Concurrency in
+    Practice (2006), Java Puzzlers (2005)
+  rows = 5   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,b1_0.author_id,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,b1_0.title,b1_0.
+             version,b1_0.year from book b1_0 where b1_0.year between ? and ? order by b1_0.year desc
+
+> findTop3ByGenreOrderByYearDesc(PROGRAMMING)
+  result: Spring in Action (2022), Effective Java (2018), Spring Boot in Action (2015)
+  rows = 3   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,b1_0.author_id,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,b1_0.title,b1_0.
+             version,b1_0.year from book b1_0 where b1_0.genre=? order by b1_0.year desc fetch first ? rows only
+
+> countByAuthorName("Joshua Bloch")
+  result: 3
+  rows = 3   statements = 1
+  Hibernate: select count(b1_0.id) from book b1_0 left join author a1_0 on a1_0.id=b1_0.author_id where a1_0.name=?
+
+> search(PROGRAMMING, 2010) [JPQL]
+  result: Effective Java (2018), Spring Boot in Action (2015), Spring in Action (2022)
+  rows = 3   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,b1_0.author_id,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,b1_0.title,b1_0.
+             version,b1_0.year from book b1_0 where b1_0.genre=? and b1_0.year>=? order by b1_0.title
+
+> archiveOlderThan(2000) [bulk update]
+  result: 1
+  rows = 1   statements = 1
+  Hibernate: update book b1_0 set archived=true where b1_0.year<?
+
+> findByTitleContainingIgnoreCase("%")
+  result:
+  rows = 0   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,b1_0.author_id,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,b1_0.title,b1_0.
+             version,b1_0.year from book b1_0 where upper(b1_0.title) like upper(?) escape '\'

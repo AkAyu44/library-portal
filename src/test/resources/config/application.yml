@@ -1,0 +1,9 @@
+# Lab 8: tests run against PostgreSQL too, but in their own database, so a test run never wipes
+# the data of the running application. Loaded in addition to application.yml (config/ wins).
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/springlab_test
+  jpa:
+    hibernate:
+      ddl-auto: create           # several test contexts share the database: none of them drops it on close
+    show-sql: false

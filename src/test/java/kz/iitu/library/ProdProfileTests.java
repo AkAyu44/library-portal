@@ -12,7 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /** Lab 3 + Lab 7: under the prod profile the API stays, but its description and Swagger UI are closed. */
-@SpringBootTest
+// Lab 8: prod validates the schema (ddl-auto: validate); the test database is recreated by every
+// context, so this test, which never touches the books, does not ask Hibernate about the schema
+@SpringBootTest(properties = "spring.jpa.hibernate.ddl-auto=none")
 @AutoConfigureMockMvc
 @ActiveProfiles("prod")
 class ProdProfileTests {

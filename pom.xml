@@ -15,7 +15,7 @@
     <artifactId>library-portal</artifactId>
     <version>1.0.0</version>
     <name>library-portal</name>
-    <description>Final educational project: all topics of labs 1-6 in one Spring Boot application</description>
+    <description>Final educational project: all topics of labs 1-8 in one Spring Boot application</description>
 
     <properties>
         <java.version>25</java.version>
@@ -59,6 +59,17 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>3.1.1</version>
         </dependency>
+        <!-- Lab 8: the data access layer — Spring Data JPA (Hibernate) and the PostgreSQL driver;
+             Spring Boot manages both versions -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <!-- Lab 1: dev-time auto restart -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -70,6 +81,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Lab 8: @DataJpaTest for the repository tests -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

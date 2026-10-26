@@ -1,0 +1,19 @@
+$ curl -s -X GET "localhost:8080/api/lab8/paging?page=1&size=3&sort=year,desc"
+# (JSON response condensed: method, rows, statements and the SQL Hibernate sent)
+
+> Page<Book> findAll(Page request [number: 1, size 3, sort: year: DESC])
+  result: {"content": ["Spring Boot in Action (2015)", "Java Concurrency in Practice (2006)", "Java Puzzlers (2005)"],
+    "totalElements": 8, "totalPages": 3}
+  rows = 3   statements = 2
+  Hibernate: select b1_0.id,b1_0.archived,a1_0.id,a1_0.country,a1_0.name,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,
+             b1_0.title,b1_0.version,b1_0.year from book b1_0 left join author a1_0 on a1_0.id=b1_0.author_id order by b1_0.year desc
+             offset ? rows fetch first ? rows only
+  Hibernate: select count(b1_0.id) from book b1_0
+
+> Slice<Book> findSliceBy(Page request [number: 1, size 3, sort: year: DESC])
+  result: {"content": ["Spring Boot in Action (2015)", "Java Concurrency in Practice (2006)", "Java Puzzlers (2005)"],
+    "hasNext": true}
+  rows = 3   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,a1_0.id,a1_0.country,a1_0.name,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,
+             b1_0.title,b1_0.version,b1_0.year from book b1_0 left join author a1_0 on a1_0.id=b1_0.author_id order by b1_0.year desc
+             offset ? rows fetch first ? rows only

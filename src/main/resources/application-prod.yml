@@ -3,6 +3,13 @@ spring:
     activate:
       on-profile: prod
 
+  # Lab 8: production never creates or drops tables; the schema must already match the entities
+  # (in a real project it is created by migrations — Flyway/Liquibase)
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
 server:
   port: 8080
 

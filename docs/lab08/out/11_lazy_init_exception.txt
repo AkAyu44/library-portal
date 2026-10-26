@@ -1,0 +1,8 @@
+2026-10-26T19:37:53.613+05:00  INFO 23592 --- [library-portal] [nio-8080-exec-1] k.iitu.library.aspect.CallTracingAspect  : [TRACE] <- BookService.scroll(..)
+2026-10-26T19:37:53.613+05:00  INFO 23592 --- [library-portal] [nio-8080-exec-1] kz.iitu.library.aspect.TimingAspect      : [TIME] BookService.scroll(..) - 46 ms
+2026-10-26T19:37:53.614+05:00  INFO 23592 --- [library-portal] [nio-8080-exec-1] kz.iitu.library.aspect.LoggingAspect     : [LOG] <- BookService.scroll(..) returned=Window [Book{id=5, title='Spring Boot in Action', genre=PROGRAMMING, year=2015}, Book{id=3, title='Java Concurrency in Practice', genre=PROGRAMMING, year=2006}, Book
+2026-10-26T19:37:53.615+05:00 ERROR 23592 --- [library-portal] [nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.hibernate.LazyInitializationException: Could not initialize proxy [kz.iitu.library.d
+
+org.hibernate.LazyInitializationException: Could not initialize proxy [kz.iitu.library.domain.Author#2] - no session
+	at org.hibernate.proxy.AbstractLazyInitializer.initialize(AbstractLazyInitializer.java:178) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.proxy.AbstractLazyInitializer.getImplementation(AbstractLazyInitializer.java:348) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]

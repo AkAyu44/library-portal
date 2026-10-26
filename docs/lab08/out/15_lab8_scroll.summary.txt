@@ -1,0 +1,27 @@
+$ curl -s -X GET "localhost:8080/api/lab8/scroll"
+# (JSON response condensed: method, rows, statements and the SQL Hibernate sent)
+
+> Window findBy(first window, year desc, id desc, Limit 3)
+  result: {"content": ["Spring in Action (2022)", "Brief Answers to the Big Questions (2018)", "Effective Java (2018)"],
+    "hasNext": true}
+  rows = 3   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,a1_0.id,a1_0.country,a1_0.name,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,
+             b1_0.title,b1_0.version,b1_0.year from book b1_0 left join author a1_0 on a1_0.id=b1_0.author_id where b1_0.year<? or
+             b1_0.year=? and b1_0.id<? order by b1_0.year desc,b1_0.id desc fetch first ? rows only
+
+> Window findBy(KeysetScrollPosition [FORWARD, {id=1, year=2018}], Limit 3)
+  result: {"content": ["Spring Boot in Action (2015)", "Java Concurrency in Practice (2006)", "Java Puzzlers (2005)"],
+    "hasNext": true}
+  rows = 3   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,a1_0.id,a1_0.country,a1_0.name,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,
+             b1_0.title,b1_0.version,b1_0.year from book b1_0 left join author a1_0 on a1_0.id=b1_0.author_id where b1_0.year<? or
+             b1_0.year=? and b1_0.id<? order by b1_0.year desc,b1_0.id desc fetch first ? rows only
+
+> Page findAll(page 1, size 3, year desc, id desc) [offset paging]
+  result: {"content": ["Spring Boot in Action (2015)", "Java Concurrency in Practice (2006)", "Java Puzzlers (2005)"],
+    "totalElements": 8}
+  rows = 3   statements = 2
+  Hibernate: select b1_0.id,b1_0.archived,a1_0.id,a1_0.country,a1_0.name,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,
+             b1_0.title,b1_0.version,b1_0.year from book b1_0 left join author a1_0 on a1_0.id=b1_0.author_id order by b1_0.year
+             desc,b1_0.id desc offset ? rows fetch first ? rows only
+  Hibernate: select count(b1_0.id) from book b1_0

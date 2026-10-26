@@ -685,3 +685,12 @@ button.danger:hover { background: var(--danger-strong); }
     }
     .card:hover { transform: none; }
 }
+
+/* Lab 8: pager of the catalogue page */
+.pager {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+}

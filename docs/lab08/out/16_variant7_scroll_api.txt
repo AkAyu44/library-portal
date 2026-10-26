@@ -1,0 +1,161 @@
+$ curl -s "localhost:8080/api/books/scroll?size=3"
+{
+  "content": [
+    "4: Spring in Action (2022)",
+    "8: Brief Answers to the Big Questions (2018)",
+    "1: Effective Java (2018)"
+  ],
+  "hasNext": true,
+  "next": {
+    "year": 2018,
+    "id": 1
+  }
+}
+----- SQL -----
+Hibernate:
+    select
+        b1_0.id,
+        b1_0.archived,
+        a1_0.id,
+        a1_0.country,
+        a1_0.name,
+        b1_0.available,
+        b1_0.created_at,
+        b1_0.genre,
+        b1_0.published_on,
+        b1_0.title,
+        b1_0.version,
+        b1_0.year
+    from
+        book b1_0
+    left join
+        author a1_0
+            on a1_0.id=b1_0.author_id
+    where
+        b1_0.year<?
+        or b1_0.year=?
+        and b1_0.id<?
+    order by
+        b1_0.year desc,
+        b1_0.id desc
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        t1_0.book_id,
+        t1_1.id,
+        t1_1.name
+    from
+        book_tag t1_0
+    join
+        tag t1_1
+            on t1_1.id=t1_0.tag_id
+    where
+        t1_0.book_id = any (?)
+
+$ curl -s "localhost:8080/api/books/scroll?size=3&afterYear=2018&afterId=1"
+{
+  "content": [
+    "5: Spring Boot in Action (2015)",
+    "3: Java Concurrency in Practice (2006)",
+    "2: Java Puzzlers (2005)"
+  ],
+  "hasNext": true,
+  "next": {
+    "year": 2005,
+    "id": 2
+  }
+}
+----- SQL -----
+Hibernate:
+    select
+        b1_0.id,
+        b1_0.archived,
+        a1_0.id,
+        a1_0.country,
+        a1_0.name,
+        b1_0.available,
+        b1_0.created_at,
+        b1_0.genre,
+        b1_0.published_on,
+        b1_0.title,
+        b1_0.version,
+        b1_0.year
+    from
+        book b1_0
+    left join
+        author a1_0
+            on a1_0.id=b1_0.author_id
+    where
+        b1_0.year<?
+        or b1_0.year=?
+        and b1_0.id<?
+    order by
+        b1_0.year desc,
+        b1_0.id desc
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        t1_0.book_id,
+        t1_1.id,
+        t1_1.name
+    from
+        book_tag t1_0
+    join
+        tag t1_1
+            on t1_1.id=t1_0.tag_id
+    where
+        t1_0.book_id = any (?)
+
+$ curl -s "localhost:8080/api/books/scroll?size=3&afterYear=2005&afterId=2"
+{
+  "content": [
+    "7: The Universe in a Nutshell (2001)",
+    "6: A Brief History of Time (1988)"
+  ],
+  "hasNext": false,
+  "next": null
+}
+----- SQL -----
+Hibernate:
+    select
+        b1_0.id,
+        b1_0.archived,
+        a1_0.id,
+        a1_0.country,
+        a1_0.name,
+        b1_0.available,
+        b1_0.created_at,
+        b1_0.genre,
+        b1_0.published_on,
+        b1_0.title,
+        b1_0.version,
+        b1_0.year
+    from
+        book b1_0
+    left join
+        author a1_0
+            on a1_0.id=b1_0.author_id
+    where
+        b1_0.year<?
+        or b1_0.year=?
+        and b1_0.id<?
+    order by
+        b1_0.year desc,
+        b1_0.id desc
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        t1_0.book_id,
+        t1_1.id,
+        t1_1.name
+    from
+        book_tag t1_0
+    join
+        tag t1_1
+            on t1_1.id=t1_0.tag_id
+    where
+        t1_0.book_id = any (?)
+

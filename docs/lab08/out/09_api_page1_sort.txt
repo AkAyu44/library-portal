@@ -1,0 +1,99 @@
+$ curl -s "localhost:8080/api/books?page=1&size=3&sort=year,desc"
+{
+    "content": [
+        {
+            "id": 5,
+            "title": "Spring Boot in Action",
+            "author": "Craig Walls",
+            "year": 2015,
+            "genre": "PROGRAMMING",
+            "available": true,
+            "archived": false,
+            "publishedOn": "2015-12-01",
+            "tags": [
+                "spring"
+            ],
+            "createdAt": "2026-10-26T14:42:34.182596Z"
+        },
+        {
+            "id": 3,
+            "title": "Java Concurrency in Practice",
+            "author": "Joshua Bloch",
+            "year": 2006,
+            "genre": "PROGRAMMING",
+            "available": false,
+            "archived": false,
+            "publishedOn": "2006-05-09",
+            "tags": [
+                "classic",
+                "java"
+            ],
+            "createdAt": "2026-10-26T14:42:34.182596Z"
+        },
+        {
+            "id": 2,
+            "title": "Java Puzzlers",
+            "author": "Joshua Bloch",
+            "year": 2005,
+            "genre": "PROGRAMMING",
+            "available": true,
+            "archived": false,
+            "publishedOn": "2005-07-01",
+            "tags": [
+                "java"
+            ],
+            "createdAt": "2026-10-26T14:42:34.182596Z"
+        }
+    ],
+    "page": {
+        "size": 3,
+        "number": 1,
+        "totalElements": 8,
+        "totalPages": 3
+    }
+}
+
+----- SQL printed by Hibernate (show-sql) -----
+Hibernate:
+    select
+        b1_0.id,
+        b1_0.archived,
+        a1_0.id,
+        a1_0.country,
+        a1_0.name,
+        b1_0.available,
+        b1_0.created_at,
+        b1_0.genre,
+        b1_0.published_on,
+        b1_0.title,
+        b1_0.version,
+        b1_0.year
+    from
+        book b1_0
+    left join
+        author a1_0
+            on a1_0.id=b1_0.author_id
+    order by
+        b1_0.year desc
+    offset
+        ? rows
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        count(b1_0.id)
+    from
+        book b1_0
+Hibernate:
+    select
+        t1_0.book_id,
+        t1_1.id,
+        t1_1.name
+    from
+        book_tag t1_0
+    join
+        tag t1_1
+            on t1_1.id=t1_0.tag_id
+    where
+        t1_0.book_id = any (?)
+

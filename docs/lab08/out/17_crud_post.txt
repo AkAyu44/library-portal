@@ -1,0 +1,83 @@
+$ curl -s -X POST localhost:8080/api/books -H "Content-Type: application/json" -d @new-book.json
+{
+    "id": 9,
+    "title": "Pro Spring 6",
+    "author": "Iuliana Cosmina",
+    "year": 2023,
+    "genre": "PROGRAMMING",
+    "available": true,
+    "archived": false,
+    "publishedOn": "2023-03-01",
+    "tags": [
+        "java",
+        "spring"
+    ],
+    "createdAt": "2026-10-26T14:43:25.376380700Z"
+}
+----- SQL -----
+Hibernate:
+    select
+        b1_0.id
+    from
+        book b1_0
+    left join
+        author a1_0
+            on a1_0.id=b1_0.author_id
+    where
+        upper(b1_0.title)=upper(?)
+        and upper(a1_0.name)=upper(?)
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        t1_0.id,
+        t1_0.name
+    from
+        tag t1_0
+    where
+        upper(t1_0.name)=upper(?)
+Hibernate:
+    select
+        t1_0.id,
+        t1_0.name
+    from
+        tag t1_0
+    where
+        upper(t1_0.name)=upper(?)
+Hibernate:
+    select
+        a1_0.id,
+        a1_0.country,
+        a1_0.name
+    from
+        author a1_0
+    where
+        upper(a1_0.name)=upper(?)
+Hibernate:
+    insert
+    into
+        author
+        (country, name)
+    values
+        (?, ?)
+Hibernate:
+    insert
+    into
+        book
+        (archived, author_id, available, created_at, genre, published_on, title, version, year)
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate:
+    insert
+    into
+        book_tag
+        (book_id, tag_id)
+    values
+        (?, ?)
+Hibernate:
+    insert
+    into
+        book_tag
+        (book_id, tag_id)
+    values
+        (?, ?)

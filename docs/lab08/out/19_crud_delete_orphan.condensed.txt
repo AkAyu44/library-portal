@@ -1,0 +1,10 @@
+$ curl -s -i -X DELETE localhost:8080/api/books/9
+HTTP/1.1 204 
+----- SQL -----
+Hibernate: select b1_0.id, b1_0.archived, b1_0.author_id, b1_0.available, b1_0.created_at, b1_0.genre, b1_0.published_on,
+           b1_0.title, b1_0.version, b1_0.year from book b1_0 where b1_0.id=?
+Hibernate: select a1_0.id, a1_0.country, a1_0.name from author a1_0 where a1_0.id=?
+Hibernate: select b1_0.author_id, b1_0.id, b1_0.archived, b1_0.available, b1_0.created_at, b1_0.genre, b1_0.published_on,
+           b1_0.title, b1_0.version, b1_0.year from book b1_0 where b1_0.author_id=?
+Hibernate: delete from book_tag where book_id=?
+Hibernate: delete from book where id=? and version=?

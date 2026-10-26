@@ -6,15 +6,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
-import kz.iitu.library.domain.Book;
 import kz.iitu.library.domain.Genre;
+import kz.iitu.library.service.BookCommand;
 import kz.iitu.library.validation.NoDigits;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
- * Lab 6: a mutable form object, separate from the immutable Book record —
+ * Lab 6: a mutable form object, separate from the Book entity —
  * the binder can fill it partially, the page is redisplayed with the input intact,
  * and there is no id field to mass-assign.
  */
@@ -43,8 +44,9 @@ public class BookForm {
     @DateTimeFormat(style = "S-", fallbackPatterns = "yyyy-MM-dd")
     private LocalDate publishedOn;
 
-    public Book toBook() {
-        return new Book(null, title, author, year, genre, available, publishedOn);
+    /** Lab 8: the form no longer builds the entity — the service resolves the author by name. */
+    public BookCommand toCommand() {
+        return new BookCommand(title, author, year, genre, available, publishedOn, Set.of());
     }
 
     public String getTitle() { return title; }

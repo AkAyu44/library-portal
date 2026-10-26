@@ -5,20 +5,31 @@
 **Co-authors of individual labs:** Bekbaev Gibrat (labs 3, 4, 5)
 
 One Spring Boot application — a library catalogue — that combines the topics and
-individual variants of laboratory works 1–7. Every lab is not a separate demo, but a layer of
+individual variants of laboratory works 1–8. Every lab is not a separate demo, but a layer of
 the same system: the REST API from labs 1, 5 and 7, the IoC beans from lab 2, the configuration
-from lab 3, the aspects from lab 4 and the forms from lab 6 all work on the same `BookService`.
+from lab 3, the aspects from lab 4 and the forms from lab 6 all work on the same `BookService`,
+which since lab 8 stores the catalogue in PostgreSQL through Spring Data JPA.
 
 Stack: **Java 25, Spring Boot 4.1.1** (Spring Framework 7), Spring MVC, Thymeleaf,
 Hibernate Validator, Spring AOP (AspectJ annotations), Actuator, Spring HATEOAS,
-springdoc-openapi 3 (Swagger UI), Maven 3.9.
+springdoc-openapi 3 (Swagger UI), Spring Data JPA + Hibernate 7, PostgreSQL 16, Maven 3.9.
 
 ## Run
+
+Since lab 8 the application needs PostgreSQL 16+ with a database and a user `springlab / springlab`
+(tests use a second database, `springlab_test`, owned by the same user):
+
+```bash
+psql -U postgres -c "create user springlab with password 'springlab';"
+psql -U postgres -c "create database springlab owner springlab;"
+psql -U postgres -c "create database springlab_test owner springlab;"
+# or: docker run --name pg-springlab -e POSTGRES_DB=springlab -e POSTGRES_USER=springlab -e POSTGRES_PASSWORD=springlab -p 5432:5432 -d postgres:16
+```
 
 ```bash
 ./mvnw spring-boot:run                                   # http://localhost:8080
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev    # http://localhost:8081
-./mvnw test                                              # 32 integration tests, one per lab experiment
+./mvnw test                                              # 41 integration tests against PostgreSQL
 ```
 
 The start page `http://localhost:8080/` lists links to every demonstration endpoint;
@@ -36,12 +47,13 @@ holds the Lab 7 demonstration requests for the IntelliJ HTTP client.
 | 5 | Spring MVC: REST + MVC controllers, status codes, static resources | `domain/Book`, `repository/BookRepository`, `service/BookService`, `api/BookRestController`, `web/BookPageController`, `templates/books/list.html`, `static/` | **V6** `GET /api/books/{id}/citation`, `text/plain` |
 | 6 | Forms, Bean Validation, i18n, `@ControllerAdvice` | `web/BookForm`, `validation/NoDigits`, `config/LocaleConfiguration`, `messages*.properties`, `web/PageExceptionHandler`, `api/ApiExceptionHandler` | **V7** `publishedOn` — `LocalDate`, `@PastOrPresent`, locale-dependent `@DateTimeFormat` |
 | 7 | REST API: DTOs and a mapper, status codes, ProblemDetail, OpenAPI | `api/dto/{BookRequest,BookResponse,BookMapper}`, `api/BookRestController`, `api/ApiExceptionHandler` (extends `ResponseEntityExceptionHandler`), `service/DuplicateTitleException`, `config/OpenApiConfig` → `/v3/api-docs`, `/swagger-ui.html` | **V7** HATEOAS — `GET /api/books/{id}` is an `EntityModel` with `self`, `books` and `citation` links |
+| 8 | Data access layer: PostgreSQL, entities, `@ManyToOne`/`@OneToMany`, `@ManyToMany`, derived and JPQL queries, bulk update, N+1, paging | `domain/{Book,Author,Tag}`, `repository/*Repository`, `persistence/{DataSeeder,QueryLab,SqlRecorder}`, `api/Lab8Controller` → `/api/lab8/*`, paged `GET /api/books`; report: `docs/lab08/` | **V7** Window + keyset scrolling — `GET /api/books/scroll`, compared with offset paging in `/api/lab8/scroll` |
 
 ### Lab 7: the contract of `/api/books`
 
 | Method and URI | Request body | Success | Errors (all `application/problem+json`) |
 |----------------|--------------|---------|------------------------------------------|
-| `GET /api/books?author=&limit=` | — | 200, array of `BookResponse` | — |
+| `GET /api/books?genre=&author=&page=&size=&sort=` (lab 8) | — | 200, page: `content` + `page{size,number,totalElements,totalPages}` | 400 for an unknown sort property |
 | `GET /api/books/{id}` | — | 200, HAL `BookResponse` + `_links` | 404 |
 | `POST /api/books` | `BookRequest` | 201 + `Location`, `BookResponse` | 400 (invalid / unparsable), 409 (same title and author) |
 | `PUT /api/books/{id}` | `BookRequest` | 200, `BookResponse` (`createdAt` kept) | 400, 404, 409 |

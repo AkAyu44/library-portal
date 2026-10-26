@@ -11,10 +11,17 @@ import jakarta.validation.Valid;
 import kz.iitu.library.api.dto.BookMapper;
 import kz.iitu.library.api.dto.BookRequest;
 import kz.iitu.library.api.dto.BookResponse;
+import kz.iitu.library.api.dto.BookWindowResponse;
 import kz.iitu.library.domain.Book;
 import kz.iitu.library.domain.Genre;
 import kz.iitu.library.service.BookNotFoundException;
 import kz.iitu.library.service.BookService;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.ScrollPosition;
+import org.springframework.data.domain.Window;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -41,6 +48,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * Lab 7: the controller speaks DTOs only (BookRequest in, BookResponse out, BookMapper between),
  * every outcome has a deliberate status code, errors are ProblemDetail from ApiExceptionHandler,
  * the contract is documented with OpenAPI; variant 7 — GET /{id} is a HATEOAS EntityModel.
+ * Lab 8: the collection is paged and sorted; variant 7 — keyset scrolling with Window.
  */
 @Tag(name = "Books", description = "The catalogue of books")
 @RestController
@@ -55,15 +63,51 @@ public class BookRestController {
         this.mapper = mapper;
     }
 
-    @Operation(summary = "List books, optionally filtered by author")
-    @ApiResponse(responseCode = "200", description = "The (possibly empty) list of books")
+    /**
+     * Lab 8, task 4: a page instead of the whole table. Spring MVC builds the Pageable from
+     * ?page=1&size=3&sort=year,desc; without parameters it is page 0, five books, sorted by title.
+     */
+    @Operation(summary = "One page of books, optionally filtered by genre and/or author")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "The page: content plus size, number, totalElements, totalPages"),
+            @ApiResponse(responseCode = "400", description = "Sorting by a property the entity does not have",
+                    content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ProblemDetail.class)))
+    })
     @GetMapping
-    public List<BookResponse> list(
+    public Page<BookResponse> list(
+            @Parameter(description = "Only books of this genre", example = "PROGRAMMING")
+            @RequestParam(required = false) Genre genre,
             @Parameter(description = "Part of the author's name, case-insensitive", example = "Bloch")
             @RequestParam(required = false) String author,
-            @Parameter(description = "Maximum number of books", example = "10")
-            @RequestParam(defaultValue = "10") int limit) {
-        return mapper.toResponseList(service.findAll(author).stream().limit(limit).toList());
+            @ParameterObject @PageableDefault(size = 5, sort = "title") Pageable pageable) {
+        return service.find(genre, author, pageable).map(mapper::toResponse);
+    }
+
+    /**
+     * Lab 8, individual variant 7: keyset scrolling, newest first. The first call has no cursor;
+     * every next call passes the year and id of the last book it received (the "next" object).
+     */
+    @Operation(summary = "Variant 7: scroll the catalogue by keyset (year desc, id desc)")
+    @GetMapping("/scroll")
+    public BookWindowResponse scroll(
+            @Parameter(description = "Books per window", example = "3")
+            @RequestParam(defaultValue = "3") int size,
+            @Parameter(description = "Year of the last book of the previous window", example = "2018")
+            @RequestParam(required = false) Integer afterYear,
+            @Parameter(description = "Id of the last book of the previous window", example = "8")
+            @RequestParam(required = false) Long afterId) {
+        ScrollPosition position = afterYear == null || afterId == null
+                ? ScrollPosition.keyset()
+                : ScrollPosition.forward(Map.of("year", afterYear, "id", afterId));
+        Window<Book> window = service.scroll(position, Math.clamp(size, 1, 50));
+        List<BookResponse> content = mapper.toResponseList(window.getContent());
+        BookWindowResponse.Cursor next = null;
+        if (window.hasNext() && !content.isEmpty()) {
+            BookResponse last = content.getLast();
+            next = new BookWindowResponse.Cursor(last.year(), last.id());
+        }
+        return new BookWindowResponse(content, window.hasNext(), next);
     }
 
     /** Lab 7, variant 7 (HATEOAS): the book plus links to itself, the collection and its citation. */
@@ -97,9 +141,9 @@ public class BookRestController {
     })
     @PostMapping
     public ResponseEntity<BookResponse> create(@Valid @RequestBody BookRequest request) {
-        Book saved = service.create(mapper.toDomain(request));
+        Book saved = service.create(mapper.toCommand(request));
         return ResponseEntity
-                .created(URI.create("/api/books/" + saved.id()))
+                .created(URI.create("/api/books/" + saved.getId()))
                 .body(mapper.toResponse(saved));
     }
 
@@ -120,7 +164,7 @@ public class BookRestController {
     public BookResponse replace(@Parameter(description = "Identifier of the book", example = "1")
                                 @PathVariable long id,
                                 @Valid @RequestBody BookRequest request) {
-        return mapper.toResponse(service.update(id, mapper.toDomain(request)));
+        return mapper.toResponse(service.update(id, mapper.toCommand(request)));
     }
 
     /** A second DELETE of the same id answers 404 — see BookService.delete for why. */

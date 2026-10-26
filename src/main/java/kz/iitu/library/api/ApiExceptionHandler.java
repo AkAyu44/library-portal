@@ -4,6 +4,7 @@ import kz.iitu.library.service.BookNotFoundException;
 import kz.iitu.library.service.DuplicateTitleException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -53,6 +54,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         // an extra field beyond the five standard ones; not called "title" — that name is
         // already the standard RFC 9457 field, and the JSON would carry the key twice
         problem.setProperty("bookTitle", ex.getTitle());
+        return problem;
+    }
+
+    /**
+     * Lab 8: ?sort=nosuchfield. The sort property is only a string until Spring Data resolves it
+     * against the entity while building the query — at run time, inside the repository — so the
+     * compiler cannot catch it. Without this handler the client got a 500 and a stack trace.
+     */
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ProblemDetail handleUnknownProperty(PropertyReferenceException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problem.setType(URI.create(ERRORS + "unknown-sort-property"));
+        problem.setTitle("Unknown sort property");
+        problem.setProperty("property", ex.getPropertyName());
         return problem;
     }
 

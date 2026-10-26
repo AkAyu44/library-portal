@@ -5,6 +5,8 @@ import kz.iitu.library.domain.Book;
 import kz.iitu.library.domain.Genre;
 import kz.iitu.library.service.BookService;
 import kz.iitu.library.service.DuplicateTitleException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,9 +32,12 @@ public class BookPageController {
         this.service = service;
     }
 
+    /** Lab 8: the catalogue page is paged too — ten books per page, by id. */
     @GetMapping
-    public String list(@RequestParam(required = false) String author, Model model) {
-        model.addAttribute("books", service.findAll(author));
+    public String list(@RequestParam(required = false) String author,
+                       @PageableDefault(size = 10, sort = "id") Pageable pageable,
+                       Model model) {
+        model.addAttribute("books", service.find(null, author, pageable));
         model.addAttribute("author", author);
         return "books/list";                    // -> templates/books/list.html
     }
@@ -62,14 +67,14 @@ public class BookPageController {
         }
         Book saved;
         try {
-            saved = service.create(form.toBook());
+            saved = service.create(form.toCommand());
         } catch (DuplicateTitleException ex) {
             // Lab 7: the same 409 rule the API has, shown to a person as a field error
             binding.rejectValue("title", "book.duplicate", new Object[]{form.getTitle()}, ex.getMessage());
             model.addAttribute("genres", Genre.values());
             return "books/form";
         }
-        redirect.addFlashAttribute("addedTitle", saved.title());
+        redirect.addFlashAttribute("addedTitle", saved.getTitle());
         return "redirect:/books";                // 302 → the browser performs GET /books
     }
 
@@ -77,7 +82,7 @@ public class BookPageController {
     public String delete(@PathVariable long id, RedirectAttributes redirect) {
         Book book = service.findById(id);
         service.delete(id);
-        redirect.addFlashAttribute("deletedTitle", book.title());
+        redirect.addFlashAttribute("deletedTitle", book.getTitle());
         return "redirect:/books";
     }
 }

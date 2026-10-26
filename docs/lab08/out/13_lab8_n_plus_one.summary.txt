@@ -1,0 +1,28 @@
+$ curl -s -X GET "localhost:8080/api/lab8/n-plus-one"
+# (JSON response condensed: method, rows, statements and the SQL Hibernate sent)
+
+> findAll() + book.getAuthor().getName()
+  result: Effective Java — Joshua Bloch, Java Puzzlers — Joshua Bloch, Java Concurrency in Practice — Joshua Bloch, Spring in
+    Action — Craig Walls, Spring Boot in Action — Craig Walls, The Universe in a Nutshell — Stephen Hawking, Brief Answers to
+    the Big Questions — Stephen Hawking, A Brief History of Time — Stephen Hawking
+  rows = 8   statements = 4
+  Hibernate: select b1_0.id,b1_0.archived,b1_0.author_id,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,b1_0.title,b1_0.
+             version,b1_0.year from book b1_0
+  Hibernate: select a1_0.id,a1_0.country,a1_0.name from author a1_0 where a1_0.id=?
+  Hibernate: select a1_0.id,a1_0.country,a1_0.name from author a1_0 where a1_0.id=?
+  Hibernate: select a1_0.id,a1_0.country,a1_0.name from author a1_0 where a1_0.id=?
+
+> findAllWithAuthor() [join fetch]
+  result: Effective Java — Joshua Bloch, Java Puzzlers — Joshua Bloch, Java Concurrency in Practice — Joshua Bloch, Spring in
+    Action — Craig Walls, Spring Boot in Action — Craig Walls, The Universe in a Nutshell — Stephen Hawking, Brief Answers to
+    the Big Questions — Stephen Hawking, A Brief History of Time — Stephen Hawking
+  rows = 8   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,a1_0.id,a1_0.country,a1_0.name,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,
+             b1_0.title,b1_0.version,b1_0.year from book b1_0 join author a1_0 on a1_0.id=b1_0.author_id
+
+> findByGenre(PROGRAMMING) [@EntityGraph]
+  result: Effective Java — Joshua Bloch, Java Puzzlers — Joshua Bloch, Java Concurrency in Practice — Joshua Bloch, Spring in
+    Action — Craig Walls, Spring Boot in Action — Craig Walls
+  rows = 5   statements = 1
+  Hibernate: select b1_0.id,b1_0.archived,a1_0.id,a1_0.country,a1_0.name,b1_0.available,b1_0.created_at,b1_0.genre,b1_0.published_on,
+             b1_0.title,b1_0.version,b1_0.year from book b1_0 left join author a1_0 on a1_0.id=b1_0.author_id where b1_0.genre=?

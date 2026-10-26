@@ -1,0 +1,129 @@
+$ curl -s "localhost:8080/api/books"
+{
+    "content": [
+        {
+            "id": 6,
+            "title": "A Brief History of Time",
+            "author": "Stephen Hawking",
+            "year": 1988,
+            "genre": "SCIENCE",
+            "available": true,
+            "archived": false,
+            "publishedOn": "1988-04-01",
+            "tags": [
+                "classic",
+                "physics"
+            ],
+            "createdAt": "2026-10-26T14:42:34.182596Z"
+        },
+        {
+            "id": 8,
+            "title": "Brief Answers to the Big Questions",
+            "author": "Stephen Hawking",
+            "year": 2018,
+            "genre": "SCIENCE",
+            "available": true,
+            "archived": false,
+            "publishedOn": "2018-10-16",
+            "tags": [
+                "physics"
+            ],
+            "createdAt": "2026-10-26T14:42:34.182596Z"
+        },
+        {
+            "id": 1,
+            "title": "Effective Java",
+            "author": "Joshua Bloch",
+            "year": 2018,
+            "genre": "PROGRAMMING",
+            "available": true,
+            "archived": false,
+            "publishedOn": "2018-01-06",
+            "tags": [
+                "classic",
+                "java"
+            ],
+            "createdAt": "2026-10-26T14:42:34.182596Z"
+        },
+        {
+            "id": 3,
+            "title": "Java Concurrency in Practice",
+            "author": "Joshua Bloch",
+            "year": 2006,
+            "genre": "PROGRAMMING",
+            "available": false,
+            "archived": false,
+            "publishedOn": "2006-05-09",
+            "tags": [
+                "classic",
+                "java"
+            ],
+            "createdAt": "2026-10-26T14:42:34.182596Z"
+        },
+        {
+            "id": 2,
+            "title": "Java Puzzlers",
+            "author": "Joshua Bloch",
+            "year": 2005,
+            "genre": "PROGRAMMING",
+            "available": true,
+            "archived": false,
+            "publishedOn": "2005-07-01",
+            "tags": [
+                "java"
+            ],
+            "createdAt": "2026-10-26T14:42:34.182596Z"
+        }
+    ],
+    "page": {
+        "size": 5,
+        "number": 0,
+        "totalElements": 8,
+        "totalPages": 2
+    }
+}
+
+----- SQL printed by Hibernate (show-sql) -----
+Hibernate:
+    select
+        b1_0.id,
+        b1_0.archived,
+        a1_0.id,
+        a1_0.country,
+        a1_0.name,
+        b1_0.available,
+        b1_0.created_at,
+        b1_0.genre,
+        b1_0.published_on,
+        b1_0.title,
+        b1_0.version,
+        b1_0.year
+    from
+        book b1_0
+    left join
+        author a1_0
+            on a1_0.id=b1_0.author_id
+    order by
+        b1_0.title
+    offset
+        ? rows
+    fetch
+        first ? rows only
+Hibernate:
+    select
+        count(b1_0.id)
+    from
+        book b1_0
+Hibernate:
+    select
+        t1_0.book_id,
+        t1_1.id,
+        t1_1.name
+    from
+        book_tag t1_0
+    join
+        tag t1_1
+            on t1_1.id=t1_0.tag_id
+    where
+        t1_0.book_id = any (?)
+

@@ -1,0 +1,205 @@
+Hibernate: 
+    select
+        count(*) 
+    from
+        author a1_0
+Hibernate: 
+    insert 
+    into
+        tag
+        (name) 
+    values
+        (?)
+Hibernate: 
+    insert 
+    into
+        tag
+        (name) 
+    values
+        (?)
+Hibernate: 
+    insert 
+    into
+        tag
+        (name) 
+    values
+        (?)
+Hibernate: 
+    insert 
+    into
+        tag
+        (name) 
+    values
+        (?)
+Hibernate: 
+    insert 
+    into
+        author
+        (country, name) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book
+        (archived, author_id, available, created_at, genre, published_on, title, version, year) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        book
+        (archived, author_id, available, created_at, genre, published_on, title, version, year) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        book
+        (archived, author_id, available, created_at, genre, published_on, title, version, year) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        author
+        (country, name) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book
+        (archived, author_id, available, created_at, genre, published_on, title, version, year) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        book
+        (archived, author_id, available, created_at, genre, published_on, title, version, year) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        author
+        (country, name) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book
+        (archived, author_id, available, created_at, genre, published_on, title, version, year) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        book
+        (archived, author_id, available, created_at, genre, published_on, title, version, year) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        book
+        (archived, author_id, available, created_at, genre, published_on, title, version, year) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        count(*) 
+    from
+        author a1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        tag t1_0
+2026-10-26T19:42:34.236+05:00  INFO 13848 --- [library-portal] [  restartedMain] kz.iitu.library.persistence.DataSeeder   : Lab 8 seed: 3 authors, 8 books, 4 tags
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        book_tag
+        (book_id, tag_id) 
+    values
+        (?, ?)

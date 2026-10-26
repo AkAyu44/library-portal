@@ -2,6 +2,8 @@ package kz.iitu.library;
 
 import kz.iitu.library.audit.AuditLog;
 import kz.iitu.library.notify.NotificationService;
+import kz.iitu.library.domain.Genre;
+import kz.iitu.library.service.BookCommand;
 import kz.iitu.library.service.BookService;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.support.AopUtils;
@@ -96,10 +98,10 @@ class LibraryPortalApplicationTests {
 
     @Test
     void lab4_selfInvocationBypassesProxyUnlessSelfIsUsed() {
-        long a = bookService.create(new kz.iitu.library.domain.Book(null, "A", "X", 2000, null, true, null)).id();
-        long b = bookService.create(new kz.iitu.library.domain.Book(null, "B", "X", 2000, null, true, null)).id();
-        long c = bookService.create(new kz.iitu.library.domain.Book(null, "C", "X", 2000, null, true, null)).id();
-        long d = bookService.create(new kz.iitu.library.domain.Book(null, "D", "X", 2000, null, true, null)).id();
+        long a = bookService.create(new BookCommand("A", "X", 2000, Genre.NOVEL, true, null, null)).getId();
+        long b = bookService.create(new BookCommand("B", "X", 2000, Genre.NOVEL, true, null, null)).getId();
+        long c = bookService.create(new BookCommand("C", "X", 2000, Genre.NOVEL, true, null, null)).getId();
+        long d = bookService.create(new BookCommand("D", "X", 2000, Genre.NOVEL, true, null, null)).getId();
 
         auditLog.clear();
         bookService.deleteBulk(List.of(a, b), false);       // this.delete(...)
@@ -121,9 +123,10 @@ class LibraryPortalApplicationTests {
     // ---------------- Lab 5 ----------------
     @Test
     void lab5_crudStatusCodes() throws Exception {
-        mvc.perform(get("/api/books").param("author", "Bloch").param("limit", "1"))
+        mvc.perform(get("/api/books").param("author", "Bloch").param("size", "1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("Effective Java"));
+                .andExpect(jsonPath("$.content[0].title").value("Effective Java"))
+                .andExpect(jsonPath("$.page.totalElements").value(3));
 
         String location = mvc.perform(post("/api/books").contentType(MediaType.APPLICATION_JSON).content(NEW_BOOK))
                 .andExpect(status().isCreated())
@@ -186,7 +189,7 @@ class LibraryPortalApplicationTests {
                 "href=\"actuator/env/app.mail.retry-count\"", "href=\"actuator/health\"",
                 "href=\"api/system/proxy\"", "href=\"api/books/stats\"", "href=\"api/system/audit\"",
                 "/api/books/bulk?ids=1,2&amp;viaProxy=false|true",
-                "href=\"api/books\"", "href=\"api/books?author=Bloch&amp;limit=1\"",
+                "href=\"api/books\"", "href=\"api/books?author=Bloch&amp;size=1\"",
                 "href=\"api/books/1/citation\"",
                 "href=\"books/new?lang=ru\"", "href=\"books/999\"", "href=\"api/books/999\"",
                 "href=\"swagger-ui.html\"", "href=\"v3/api-docs\"", "href=\"api/books/1\"",

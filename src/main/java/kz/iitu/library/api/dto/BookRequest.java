@@ -11,6 +11,7 @@ import kz.iitu.library.domain.Genre;
 import kz.iitu.library.validation.NoDigits;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Lab 7: what a client may send to POST/PUT /api/books.
@@ -36,5 +37,9 @@ public record BookRequest(
         Boolean available,
 
         @Schema(example = "2023-03-01")
-        @PastOrPresent(message = "{book.published.past}") LocalDate publishedOn
+        @PastOrPresent(message = "{book.published.past}") LocalDate publishedOn,
+
+        // Lab 8: tag names; unknown ones are created (book_tag gets one row per tag)
+        @Schema(example = "[\"java\", \"spring\"]")
+        List<@NotBlank String> tags
 ) { }

@@ -34,7 +34,7 @@ class Lab7RestApiTests {
 
     @Autowired MockMvc mvc;
 
-    /** Every test works on its own book, so the shared in-memory catalogue never causes a 409. */
+    /** Every test works on its own book, so the shared catalogue never causes a 409. */
     private static String body(String title) {
         return """
                 {"title":"%s","author":"Lab Seven","year":2024,"genre":"SCIENCE",
@@ -177,12 +177,12 @@ class Lab7RestApiTests {
     }
 
     @Test
-    @DisplayName("the collection is a JSON array of response DTOs")
+    @DisplayName("Lab 8: the collection is a page of response DTOs")
     void collectionIsArrayOfDtos() throws Exception {
         mvc.perform(get("/api/books").param("author", "Bloch"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("Effective Java"))
-                .andExpect(jsonPath("$[0].createdAt").isNotEmpty());
+                .andExpect(jsonPath("$.content[0].title").value("Effective Java"))
+                .andExpect(jsonPath("$.content[0].createdAt").isNotEmpty());
     }
 
     @Test

@@ -1,0 +1,19 @@
+$ git checkout main && git pull
+Your branch is up to date with 'origin/main'.
+Already on 'main'
+Already up to date.
+$ git checkout -b lab08
+Switched to a new branch 'lab08'
+$ psql --version
+psql (PostgreSQL) 16.14
+$ psql -U postgres -c "create user springlab with password 'springlab';"
+CREATE ROLE
+$ psql -U postgres -c "create database springlab owner springlab;"
+CREATE DATABASE
+$ psql -U postgres -c "\l springlab"
+                                                 List of databases
+   Name    |   Owner   | Encoding | Locale Provider | Collate | Ctype | ICU Locale | ICU Rules | Access privileges 
+-----------+-----------+----------+-----------------+---------+-------+------------+-----------+-------------------
+ springlab | springlab | UTF8     | libc            | C       | C     |            |           | 
+(1 row)
+
